@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plane, Train, Hotel, Sparkles, Shirt, Palette } from 'lucide-react';
+import { Plane, Train, Hotel, Sparkles, Car, Utensils, CheckCircle2 } from 'lucide-react';
 import { RawBackground } from './RawBackground';
 
 export const GuestGuide: React.FC = () => {
@@ -8,34 +8,37 @@ export const GuestGuide: React.FC = () => {
       title: "By Air",
       icon: Plane,
       badge: "TRZ & CJB",
-      desc: "Tiruchirappalli (TRZ ~80 km) & Coimbatore (CJB ~130 km) airports offer frequent taxis to Karur.",
+      desc: "Tiruchirappalli (TRZ ~80 km) & Coimbatore (CJB ~130 km) airports offer frequent taxis directly to Karur.",
     },
     {
       title: "By Train",
       icon: Train,
       badge: "Karur Junction (KRR)",
-      desc: "Prime railway junction directly connected to Chennai, Bangalore, and Coimbatore. 10 mins to venue.",
+      desc: "Prime railway junction directly connected to Chennai, Bangalore, and Coimbatore. Just 10 mins to the venue.",
     },
     {
-      title: "Stay",
+      title: "Guest Stays",
       icon: Hotel,
       badge: "Karur Town",
-      desc: "Comfortable air-conditioned hotel rooms and guest stays are available within 3 km of the Mahal.",
+      desc: "Comfortable air-conditioned hotel rooms and premium guest stays are available within 3 km of the venue.",
     },
   ];
 
-  const attireThemes = [
+  const hospitalityFeatures = [
     {
-      event: "Grand Reception",
-      timing: "12 Dec • 6–8 PM",
-      colors: "Silk Sarees, Evening Attire & Bandhgalas",
-      swatches: ["#2d0824", "#4a0e20", "#d4af37", "#0b1329"],
+      icon: CheckCircle2,
+      title: "Same Venue for All Celebrations",
+      desc: "Both the Grand Reception (12 Dec) and Sacred Muhurtham (13 Dec) will be held at Shri Kamatchi Mahal, Karur.",
     },
     {
-      event: "Sacred Muhurtham",
-      timing: "13 Dec • 4:30–6 AM",
-      colors: "Kanchipuram Silk & Pure Silk Veshti",
-      swatches: ["#deb853", "#9b111e", "#faf5eb", "#588157"],
+      icon: Car,
+      title: "Valet & Dedicated Parking",
+      desc: "Spacious and secure parking facilities are arranged within the venue premises for all guests.",
+    },
+    {
+      icon: Utensils,
+      title: "Traditional South Indian Dining",
+      desc: "Authentic, grand vegetarian feast prepared with love and served in the air-conditioned dining hall.",
     },
   ];
 
@@ -56,10 +59,10 @@ export const GuestGuide: React.FC = () => {
           </div>
 
           <h2 className="font-serif italic text-2xl sm:text-4xl md:text-5xl text-ivory-50 tracking-wide text-shadow-deep">
-            Travel &amp; Attire Guide
+            Travel &amp; Hospitality
           </h2>
           <p className="font-sans text-[10px] sm:text-xs text-gold-300/90 tracking-widest uppercase mt-0.5 text-shadow-deep">
-            Everything you need for a comfortable stay in Karur
+            Everything you need for a comfortable visit to Karur
           </p>
         </div>
 
@@ -90,43 +93,41 @@ export const GuestGuide: React.FC = () => {
           })}
         </div>
 
-        {/* Attire Card */}
+        {/* Hospitality & Comfort Card (Replaced Dress Code) */}
         <div className="p-4 sm:p-5 rounded-2xl luxury-card-gold w-full shadow-xl">
-          <div className="flex items-center justify-between mb-2 pb-2 border-b border-gold-500/20">
+          <div className="flex items-center justify-between mb-3 pb-2 border-b border-gold-500/20">
             <div className="flex items-center gap-1.5">
-              <Shirt className="w-4 h-4 text-gold-400" />
+              <Sparkles className="w-4 h-4 text-gold-400" />
               <span className="font-cinzel text-xs font-bold text-gold-gradient uppercase tracking-wider">
-                Dress Code &amp; Celebratory Palette
+                Hospitality &amp; Guest Comfort
               </span>
             </div>
-            <div className="flex items-center gap-1 text-[10px] font-sans text-gold-300/80">
-              <Palette className="w-3 h-3 text-gold-400" />
-              <span>Traditional South Indian Splendor</span>
-            </div>
+            <span className="text-[10px] font-sans text-gold-300/80 uppercase tracking-widest">
+              Shri Kamatchi Mahal • Karur
+            </span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {attireThemes.map((attire, idx) => (
-              <div key={idx} className="p-2.5 rounded-xl bg-wine-900/60 border border-gold-500/20 flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center justify-between text-xs font-cinzel font-bold text-gold-200 mb-0.5">
-                    <span>{attire.event}</span>
-                    <span className="text-[10px] text-gold-300/70 font-sans">{attire.timing}</span>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {hospitalityFeatures.map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div key={idx} className="p-3 rounded-xl bg-wine-900/60 border border-gold-500/20 flex flex-col">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Icon className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                    <span className="text-xs font-cinzel font-bold text-gold-200">
+                      {item.title}
+                    </span>
                   </div>
-                  <p className="font-serif italic text-xs text-ivory-100/90">
-                    "{attire.colors}"
+                  <p className="font-sans text-[10px] sm:text-[11px] text-ivory-100/85 leading-relaxed mt-0.5">
+                    {item.desc}
                   </p>
                 </div>
-                <div className="flex items-center gap-1.5 mt-2">
-                  {attire.swatches.map((col, cIdx) => (
-                    <span key={cIdx} className="w-5 h-5 rounded-full border border-white/20 shadow" style={{ backgroundColor: col }} />
-                  ))}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
     </section>
   );
 };
+

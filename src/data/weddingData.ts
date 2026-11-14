@@ -153,7 +153,7 @@ export const weddingData: WeddingData = {
     pincode: "639001",
     mapQuery: "Shri Kamatchi Mahal, Karur, Tamil Nadu",
     // Configurable Google Maps embed
-    mapEmbedUrl: "https://www.google.com/maps?q=Shri+Kamatchi+Mahal+Karur+Tamil+Nadu&output=embed",
+    mapEmbedUrl: "https://maps.google.com/maps?q=Shri+Kamatchi+Mahal,+Karur,+Tamil+Nadu&t=&z=15&ie=UTF8&iwloc=&output=embed",
     directionsUrl: "https://www.google.com/maps/dir/?api=1&destination=Shri+Kamatchi+Mahal,+Karur,+Tamil+Nadu",
     features: [
       "Both Reception & Muhurtham held here",

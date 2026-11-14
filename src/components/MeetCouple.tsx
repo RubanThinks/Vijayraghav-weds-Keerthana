@@ -58,15 +58,17 @@ export const MeetCouple: React.FC = () => {
             <div className="grid grid-cols-2 gap-3 sm:gap-6 w-full items-center">
               
               {/* GROOM: Vijayraghav */}
-              <div className="flex flex-col items-center p-3 sm:p-4 rounded-2xl bg-plum-950/85 border border-gold-400/40 shadow-xl group hover:border-gold-400 transition-all">
-                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-gold-400 shadow-md bg-wine-900 mb-2">
+              <div className="flex flex-col items-center p-2.5 sm:p-4 rounded-2xl bg-plum-950/85 border border-gold-400/40 shadow-2xl group hover:border-gold-400 transition-all">
+                {/* Large Rectangular Portrait Frame */}
+                <div className="relative w-full max-w-[145px] sm:max-w-[180px] md:max-w-[210px] aspect-[4/5] rounded-2xl overflow-hidden border-2 border-gold-400/80 shadow-[0_8px_24px_rgba(0,0,0,0.7)] bg-wine-900 mb-2">
                   <img
                     src={groom.photo}
                     alt={groom.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 rounded-full border border-gold-200/40 pointer-events-none" />
+                  {/* Subtle Gold Filigree Inlay Ring */}
+                  <div className="absolute inset-0 rounded-2xl border border-gold-200/30 pointer-events-none" />
                 </div>
 
                 <span className="font-sans text-[9px] sm:text-[10px] tracking-[0.2em] uppercase text-gold-300 font-semibold">
@@ -83,15 +85,17 @@ export const MeetCouple: React.FC = () => {
               </div>
 
               {/* BRIDE: Keerthana */}
-              <div className="flex flex-col items-center p-3 sm:p-4 rounded-2xl bg-plum-950/85 border border-gold-400/40 shadow-xl group hover:border-gold-400 transition-all">
-                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-gold-400 shadow-md bg-wine-900 mb-2">
+              <div className="flex flex-col items-center p-2.5 sm:p-4 rounded-2xl bg-plum-950/85 border border-gold-400/40 shadow-2xl group hover:border-gold-400 transition-all">
+                {/* Large Rectangular Portrait Frame */}
+                <div className="relative w-full max-w-[145px] sm:max-w-[180px] md:max-w-[210px] aspect-[4/5] rounded-2xl overflow-hidden border-2 border-gold-400/80 shadow-[0_8px_24px_rgba(0,0,0,0.7)] bg-wine-900 mb-2">
                   <img
                     src={bride.photo}
                     alt={bride.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 rounded-full border border-gold-200/40 pointer-events-none" />
+                  {/* Subtle Gold Filigree Inlay Ring */}
+                  <div className="absolute inset-0 rounded-2xl border border-gold-200/30 pointer-events-none" />
                 </div>
 
                 <span className="font-sans text-[9px] sm:text-[10px] tracking-[0.2em] uppercase text-gold-300 font-semibold">

@@ -21,11 +21,10 @@ export const MonogramVK: React.FC<MonogramVKProps> = ({
   return (
     <div
       style={{ width: `${size}px`, height: `${size}px` }}
-      className={`relative inline-flex items-center justify-center select-none shrink-0 ${
-        showBorder
+      className={`relative inline-flex items-center justify-center select-none shrink-0 ${showBorder
           ? 'rounded-full bg-gradient-to-b from-[#380622]/90 via-[#270317]/95 to-[#1F0212]/95 border border-gold-400/50 shadow-[0_2px_14px_rgba(224,180,119,0.22)]'
           : ''
-      } ${className}`}
+        } ${className}`}
       aria-label="VK Monogram"
     >
       {/* Subtle Inner Gold Ring (Only if bordered) */}

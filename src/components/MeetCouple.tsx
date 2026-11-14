@@ -59,7 +59,7 @@ export const MeetCouple: React.FC = () => {
               
               {/* GROOM: Vijayraghav */}
               <div className="flex flex-col items-center p-3 sm:p-4 rounded-2xl bg-plum-950/85 border border-gold-400/40 shadow-xl group hover:border-gold-400 transition-all">
-                <div className="relative w-18 h-18 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-gold-400 shadow-md bg-wine-900 mb-2">
+                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-gold-400 shadow-md bg-wine-900 mb-2">
                   <img
                     src={groom.photo}
                     alt={groom.name}
@@ -84,7 +84,7 @@ export const MeetCouple: React.FC = () => {
 
               {/* BRIDE: Keerthana */}
               <div className="flex flex-col items-center p-3 sm:p-4 rounded-2xl bg-plum-950/85 border border-gold-400/40 shadow-xl group hover:border-gold-400 transition-all">
-                <div className="relative w-18 h-18 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-gold-400 shadow-md bg-wine-900 mb-2">
+                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full overflow-hidden border-2 border-gold-400 shadow-md bg-wine-900 mb-2">
                   <img
                     src={bride.photo}
                     alt={bride.name}

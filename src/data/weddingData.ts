@@ -82,16 +82,16 @@ export const weddingData: WeddingData = {
       name: "Vijayraghav",
       tamilName: "விஜய்ராகவ்",
       title: "Groom",
-      photo: "/assets/couple/groom-portrait.svg",
-      portraitPlaceholder: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=900&q=80",
+      photo: "/assets/couple/groom-portrait.jpg",
+      portraitPlaceholder: "/assets/couple/groom-portrait.jpg",
       quote: "Blessed with love, honored by tradition, stepping into forever."
     },
     bride: {
       name: "Keerthana",
       tamilName: "கீர்த்தனா",
       title: "Bride",
-      photo: "/assets/couple/bride-portrait.svg",
-      portraitPlaceholder: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=900&q=80",
+      photo: "/assets/couple/bride-portrait.jpg",
+      portraitPlaceholder: "/assets/couple/bride-portrait.jpg",
       quote: "Two hearts bound by grace, family blessings, and timeless promises."
     },
     hashtag: "#VijayraghavWedsKeerthana",

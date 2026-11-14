@@ -1,0 +1,334 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Gradients -->
+    <radialGradient id="prabhaGlow" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" stop-color="#fff5cc" stop-opacity="0.9"/>
+      <stop offset="35%" stop-color="#ffd700" stop-opacity="0.75"/>
+      <stop offset="70%" stop-color="#d4af37" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff8db"/>
+      <stop offset="25%" stop-color="#ffd700"/>
+      <stop offset="50%" stop-color="#d4af37"/>
+      <stop offset="80%" stop-color="#996515"/>
+      <stop offset="100%" stop-color="#e6ca65"/>
+    </linearGradient>
+
+    <linearGradient id="velGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fffbe6"/>
+      <stop offset="30%" stop-color="#ffd700"/>
+      <stop offset="70%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#8a6112"/>
+    </linearGradient>
+
+    <linearGradient id="peacockBody" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00a896"/>
+      <stop offset="50%" stop-color="#028090"/>
+      <stop offset="100%" stop-color="#05668d"/>
+    </linearGradient>
+
+    <radialGradient id="peacockEye" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#001845"/>
+      <stop offset="35%" stop-color="#023e8a"/>
+      <stop offset="65%" stop-color="#00b4d8"/>
+      <stop offset="85%" stop-color="#90e0ef"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </radialGradient>
+
+    <linearGradient id="skinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffe8d6"/>
+      <stop offset="100%" stop-color="#f3d1b6"/>
+    </linearGradient>
+
+    <linearGradient id="silkDhoti" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff9e6"/>
+      <stop offset="40%" stop-color="#ffeaa7"/>
+      <stop offset="100%" stop-color="#f9ca24"/>
+    </linearGradient>
+
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="velGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="15" result="blur"/>
+      <feColorMatrix type="matrix" values="1 0 0 0 1   0 0.8 0 0 0.8   0 0 0 0 0.2  0 0 0 1 0"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Aura Glow Behind -->
+  <circle cx="400" cy="400" r="320" fill="url(#prabhaGlow)" filter="url(#softGlow)"/>
+
+  <!-- Prabhavali / Divine Arch with Flaming Rays -->
+  <g id="prabhavali">
+    <circle cx="400" cy="400" r="280" stroke="url(#goldGrad)" stroke-width="4" stroke-dasharray="8 6" opacity="0.8"/>
+    <circle cx="400" cy="400" r="265" stroke="url(#goldGrad)" stroke-width="2" opacity="0.6"/>
+    
+    <!-- Arch Flame Rays (32 rays) -->
+    <g stroke="url(#goldGrad)" stroke-width="3" opacity="0.85">
+      <line x1="400" y1="110" x2="400" y2="85" />
+      <line x1="454" y1="115" x2="461" y2="90" />
+      <line x1="507" y1="131" x2="520" y2="108" />
+      <line x1="556" y1="157" x2="574" y2="137" />
+      <line x1="600" y1="192" x2="623" y2="175" />
+      <line x1="635" y1="235" x2="662" y2="223" />
+      <line x1="661" y1="284" x2="691" y2="277" />
+      <line x1="675" y1="338" x2="707" y2="336" />
+      <line x1="675" y1="394" x2="707" y2="397" />
+      <line x1="662" y1="450" x2="692" y2="457" />
+      <line x1="637" y1="502" x2="664" y2="515" />
+      
+      <!-- Mirror Left side rays -->
+      <line x1="346" y1="115" x2="339" y2="90" />
+      <line x1="293" y1="131" x2="280" y2="108" />
+      <line x1="244" y1="157" x2="226" y2="137" />
+      <line x1="200" y1="192" x2="177" y2="175" />
+      <line x1="165" y1="235" x2="138" y2="223" />
+      <line x1="139" y1="284" x2="109" y2="277" />
+      <line x1="125" y1="338" x2="93" y2="336" />
+      <line x1="125" y1="394" x2="93" y2="397" />
+      <line x1="138" y1="450" x2="108" y2="457" />
+      <line x1="163" y1="502" x2="136" y2="515" />
+    </g>
+
+    <!-- Top Kirtimukha (Auspicious Face of Glory Crest) -->
+    <path d="M375 110 C375 80, 425 80, 425 110 C440 95, 460 120, 435 130 C420 135, 380 135, 365 130 C340 120, 360 95, 375 110 Z" fill="url(#goldGrad)" />
+    <circle cx="400" cy="112" r="7" fill="#e63946" stroke="#ffd700" stroke-width="2"/>
+  </g>
+
+  <!-- Divine Peacock (Mayil) Behind Lord Murugan -->
+  <g id="peacock" opacity="0.95">
+    <!-- Peacock Tail Fan -->
+    <g id="peacockTail">
+      <!-- Layered Feather Eyes -->
+      <path d="M 230 450 C 170 380, 160 300, 210 240 C 240 280, 250 360, 230 450 Z" fill="url(#peacockBody)" opacity="0.6"/>
+      <ellipse cx="205" cy="270" rx="16" ry="24" transform="rotate(-30 205 270)" fill="url(#peacockEye)" />
+      
+      <path d="M 210 500 C 130 460, 110 370, 150 290 C 190 340, 215 420, 210 500 Z" fill="url(#peacockBody)" opacity="0.7"/>
+      <ellipse cx="145" cy="330" rx="18" ry="26" transform="rotate(-45 145 330)" fill="url(#peacockEye)" />
+
+      <path d="M 200 560 C 110 540, 80 440, 110 360 C 160 410, 190 490, 200 560 Z" fill="url(#peacockBody)" opacity="0.75"/>
+      <ellipse cx="110" cy="410" rx="17" ry="25" transform="rotate(-60 110 410)" fill="url(#peacockEye)" />
+
+      <path d="M 210 630 C 120 630, 85 530, 110 460 C 150 510, 185 570, 210 630 Z" fill="url(#peacockBody)" opacity="0.7"/>
+      <ellipse cx="115" cy="510" rx="18" ry="25" transform="rotate(-75 115 510)" fill="url(#peacockEye)" />
+    </g>
+
+    <!-- Peacock Neck & Head (Resting gracefully beside Murugan) -->
+    <path d="M 290 640 C 270 560, 260 500, 275 440 C 285 400, 275 365, 255 350 C 245 342, 235 345, 230 355 C 220 375, 240 405, 248 435 C 255 470, 250 540, 270 650 Z" fill="url(#peacockBody)" stroke="url(#goldGrad)" stroke-width="2"/>
+    <!-- Peacock Head Crest (Kalagi) -->
+    <circle cx="240" cy="340" r="4" fill="#ffd700"/>
+    <circle cx="233" cy="334" r="3" fill="#00b4d8"/>
+    <circle cx="247" cy="334" r="3" fill="#00b4d8"/>
+    <!-- Peacock Eye -->
+    <circle cx="242" cy="355" r="3" fill="#0b1329"/>
+    <circle cx="243" cy="354" r="1" fill="#fff"/>
+    <!-- Golden Beak -->
+    <path d="M 230 358 L 215 363 L 230 367 Z" fill="url(#goldGrad)"/>
+  </g>
+
+  <!-- Lord Murugan Figure -->
+  <g id="lordMurugan">
+    <!-- Divine Shoulders & Torso -->
+    <path d="M 330 390 C 310 420, 290 480, 295 560 C 320 580, 370 590, 400 590 C 430 590, 480 580, 505 560 C 510 480, 490 420, 470 390 C 430 405, 370 405, 330 390 Z" fill="url(#skinGrad)" stroke="url(#goldGrad)" stroke-width="1.5"/>
+
+    <!-- Sacred Golden Dhoti (Pitambaram) with Rich Zari Borders -->
+    <g id="dhoti">
+      <path d="M 295 560 C 310 650, 320 730, 310 830 C 360 845, 440 845, 490 830 C 480 730, 490 650, 505 560 C 440 585, 360 585, 295 560 Z" fill="url(#silkDhoti)" stroke="url(#goldGrad)" stroke-width="2"/>
+      <!-- Pleats (Kozhumai) -->
+      <path d="M 380 575 L 375 835 M 400 580 L 400 840 M 420 575 L 425 835" stroke="url(#goldGrad)" stroke-width="3" stroke-linecap="round"/>
+      <!-- Golden Waist Belt (Oddiyanam) -->
+      <path d="M 292 560 C 350 590, 450 590, 508 560 L 505 580 C 450 610, 350 610, 295 580 Z" fill="url(#goldGrad)"/>
+      <circle cx="400" cy="588" r="10" fill="#e63946" stroke="#fff" stroke-width="1.5"/>
+    </g>
+
+    <!-- Divine Lotus Pedestal (Padmapitham) -->
+    <g id="lotusPedestal" transform="translate(0, 40)">
+      <ellipse cx="400" cy="800" rx="200" ry="35" fill="url(#goldGrad)"/>
+      <!-- Lotus Petals -->
+      <path d="M 220 800 C 240 840, 280 850, 310 810 C 330 855, 380 865, 400 815 C 420 865, 470 855, 490 810 C 520 850, 560 840, 580 800 Z" fill="#f4a261" stroke="url(#goldGrad)" stroke-width="2"/>
+      <path d="M 260 810 C 300 870, 370 875, 400 825 C 430 875, 500 870, 540 810 Z" fill="#e76f51" opacity="0.9"/>
+    </g>
+
+    <!-- Divine Face (Thirumugam) -->
+    <g id="face">
+      <!-- Neck -->
+      <path d="M 370 330 C 370 365, 365 385, 370 400 C 385 405, 415 405, 430 400 C 435 385, 430 365, 430 330 Z" fill="url(#skinGrad)"/>
+      
+      <!-- Head Contour -->
+      <path d="M 350 250 C 340 300, 360 355, 400 355 C 440 355, 460 300, 450 250 C 435 240, 365 240, 350 250 Z" fill="url(#skinGrad)" stroke="url(#goldGrad)" stroke-width="1.5"/>
+
+      <!-- Divine Serene Eyes (Karunai Vizhigal) -->
+      <!-- Left Eye -->
+      <path d="M 368 280 Q 380 272 392 280 Q 380 288 368 280 Z" fill="#ffffff" stroke="#331800" stroke-width="1.5"/>
+      <circle cx="380" cy="280" r="3.5" fill="#1b120c"/>
+      <circle cx="381" cy="279" r="1.2" fill="#ffffff"/>
+      <!-- Right Eye -->
+      <path d="M 408 280 Q 420 272 432 280 Q 420 288 408 280 Z" fill="#ffffff" stroke="#331800" stroke-width="1.5"/>
+      <circle cx="420" cy="280" r="3.5" fill="#1b120c"/>
+      <circle cx="421" cy="279" r="1.2" fill="#ffffff"/>
+
+      <!-- Eyebrows -->
+      <path d="M 365 272 Q 380 266 394 274" stroke="#2b1810" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path d="M 406 274 Q 420 266 435 272" stroke="#2b1810" stroke-width="2" stroke-linecap="round" fill="none"/>
+
+      <!-- Sacred Vibhuti (Thiruneeru) and Kumkum Tilak -->
+      <g id="tilak">
+        <!-- 3 Horizontal Lines (Tripundra) -->
+        <line x1="384" y1="256" x2="416" y2="256" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+        <line x1="382" y1="260" x2="418" y2="260" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+        <line x1="385" y1="264" x2="415" y2="264" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+        <!-- Radiant Vermilion Red Pottu in Center -->
+        <circle cx="400" cy="260" r="3" fill="#d90429" stroke="#ffbe0b" stroke-width="0.8"/>
+        <!-- Golden Santhanam Base -->
+        <path d="M 398 252 L 402 252 L 400 256 Z" fill="#ffbe0b"/>
+      </g>
+
+      <!-- Graceful Nose -->
+      <path d="M 400 275 L 398 300 Q 400 306 405 303" stroke="#b07d62" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+
+      <!-- Compassionate Smile (Mandhahasam) -->
+      <path d="M 388 320 Q 400 330 412 320" stroke="#c1121f" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <path d="M 390 320 Q 400 326 410 320" fill="#c1121f"/>
+
+      <!-- Golden Ear Ornaments (Makara Kundalams) -->
+      <path d="M 345 275 C 335 285, 335 315, 345 325 C 352 315, 350 285, 345 275 Z" fill="url(#goldGrad)" stroke="#8a6112" stroke-width="1.5"/>
+      <circle cx="342" cy="332" r="5" fill="#e63946" stroke="#ffd700" stroke-width="1"/>
+      <path d="M 455 275 C 465 285, 465 315, 455 325 C 448 315, 450 285, 455 275 Z" fill="url(#goldGrad)" stroke="#8a6112" stroke-width="1.5"/>
+      <circle cx="458" cy="332" r="5" fill="#e63946" stroke="#ffd700" stroke-width="1"/>
+    </g>
+
+    <!-- Royal Golden Crown (Raja Kireedam) -->
+    <g id="kireedam">
+      <!-- Crown Base -->
+      <path d="M 345 248 C 370 238, 430 238, 455 248 L 460 220 C 430 215, 370 215, 340 220 Z" fill="url(#goldGrad)" stroke="#744a04" stroke-width="1.5"/>
+      <!-- Crown Middle Tiers -->
+      <path d="M 350 220 L 360 170 C 385 165, 415 165, 440 170 L 450 220 Z" fill="url(#goldGrad)" stroke="#744a04" stroke-width="1.5"/>
+      <!-- Crown Peak with Kalasam Crest -->
+      <path d="M 370 170 L 400 120 L 430 170 Z" fill="url(#goldGrad)" stroke="#744a04" stroke-width="1.5"/>
+      <circle cx="400" cy="116" r="6" fill="#ffd700" stroke="#fff" stroke-width="1.5"/>
+      <!-- Crown Gemstones (Rubies & Emeralds) -->
+      <circle cx="400" cy="232" r="6" fill="#d90429"/>
+      <circle cx="375" cy="233" r="4.5" fill="#2a9d8f"/>
+      <circle cx="425" cy="233" r="4.5" fill="#2a9d8f"/>
+      <circle cx="400" cy="190" r="5" fill="#d90429"/>
+      <circle cx="385" cy="195" r="3.5" fill="#2a9d8f"/>
+      <circle cx="415" cy="195" r="3.5" fill="#2a9d8f"/>
+      <!-- Pearl strings draping from crown -->
+      <circle cx="346" cy="245" r="3" fill="#fff"/>
+      <circle cx="343" cy="254" r="3" fill="#fff"/>
+      <circle cx="341" cy="263" r="3" fill="#fff"/>
+      <circle cx="454" cy="245" r="3" fill="#fff"/>
+      <circle cx="457" cy="254" r="3" fill="#fff"/>
+      <circle cx="459" cy="263" r="3" fill="#fff"/>
+    </g>
+
+    <!-- Golden Jewels & Harams -->
+    <g id="jewels">
+      <!-- Choker (Kanthabharanam) -->
+      <path d="M 372 385 C 385 395, 415 395, 428 385 C 422 395, 378 395, 372 385 Z" fill="url(#goldGrad)" stroke="#8a6112"/>
+      <!-- Long Golden Chain (Kasu Malai / Padakkam) -->
+      <path d="M 345 400 C 370 510, 430 510, 455 400" stroke="url(#goldGrad)" stroke-width="6" fill="none" stroke-dasharray="8 4"/>
+      <!-- Big Golden Pendant with Gemstone -->
+      <circle cx="400" cy="485" r="14" fill="url(#goldGrad)" stroke="#6a4704" stroke-width="2"/>
+      <circle cx="400" cy="485" r="8" fill="#d90429"/>
+      <circle cx="400" cy="485" r="4" fill="#ffd700"/>
+      <!-- Golden Sacred Thread (Poonool / Yajnopavita) -->
+      <path d="M 360 395 Q 400 480 435 565" stroke="#fff8db" stroke-width="2.5" fill="none" opacity="0.9"/>
+    </g>
+
+    <!-- Fragrant Fresh Flower Garlands (Malar Malai) -->
+    <g id="garlands">
+      <!-- White Jasmine (Malli) and Red Rose Garland draping from shoulders -->
+      <!-- Left side garland -->
+      <g stroke="#ffffff" stroke-width="8" stroke-linecap="round" opacity="0.95">
+        <path d="M 330 390 C 315 470, 330 570, 360 660" fill="none" stroke-dasharray="2 14"/>
+      </g>
+      <g stroke="#c1121f" stroke-width="10" stroke-linecap="round">
+        <path d="M 330 390 C 315 470, 330 570, 360 660" fill="none" stroke-dasharray="4 22"/>
+      </g>
+      <!-- Right side garland -->
+      <g stroke="#ffffff" stroke-width="8" stroke-linecap="round" opacity="0.95">
+        <path d="M 470 390 C 485 470, 470 570, 440 660" fill="none" stroke-dasharray="2 14"/>
+      </g>
+      <g stroke="#c1121f" stroke-width="10" stroke-linecap="round">
+        <path d="M 470 390 C 485 470, 470 570, 440 660" fill="none" stroke-dasharray="4 22"/>
+      </g>
+      <!-- Garland Knot / Tassel at Chest -->
+      <circle cx="400" cy="670" r="12" fill="#c1121f"/>
+      <circle cx="400" cy="670" r="7" fill="#ffffff"/>
+      <circle cx="400" cy="670" r="3" fill="#ffd700"/>
+    </g>
+
+    <!-- Right Hand: Abhaya Hastham (Divine Protective Gesture) -->
+    <g id="abhayaMudra">
+      <path d="M 480 450 C 510 470, 530 460, 545 425 C 550 410, 540 390, 525 395 C 520 405, 500 425, 480 435 Z" fill="url(#skinGrad)" stroke="url(#goldGrad)" stroke-width="1.5"/>
+      <!-- Golden Vangi / Armlet -->
+      <path d="M 485 430 L 495 440" stroke="url(#goldGrad)" stroke-width="6"/>
+      <!-- Auspicious Palm Sign -->
+      <circle cx="533" cy="410" r="4" fill="#c1121f" opacity="0.8"/>
+    </g>
+  </g>
+
+  <!-- The Sacred Golden Vel (வேல்) - Hand-Held & Radiating Supreme Power -->
+  <g id="sacredVel" filter="url(#velGlow)">
+    <!-- Vel Shaft (Long Golden Staff) -->
+    <line x1="510" y1="200" x2="550" y2="820" stroke="url(#velGrad)" stroke-width="12" stroke-linecap="round"/>
+    <line x1="509" y1="200" x2="549" y2="820" stroke="#fff8e7" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+
+    <!-- Sacred Leaf-Shaped Vel Head (Gnana Vel) -->
+    <!-- Represents supreme wisdom: Broad, Deep, Sharp -->
+    <g transform="translate(485, 40)">
+      <!-- Outer Golden Blade Contour -->
+      <path d="M 25 220 
+               C -25 180, -35 110, 5 40 
+               C 15 15, 25 0, 25 0 
+               C 25 0, 35 15, 45 40 
+               C 85 110, 75 180, 25 220 Z" 
+            fill="url(#velGrad)" 
+            stroke="#ffffff" 
+            stroke-width="2.5"/>
+
+      <!-- Inner Sacred Flame & OM / Trishul Veins -->
+      <path d="M 25 200 
+               C -10 160, -15 110, 10 50 
+               C 18 30, 25 15, 25 15 
+               C 25 15, 32 30, 40 50 
+               C 65 110, 60 160, 25 200 Z" 
+            fill="none" 
+            stroke="#fffbe6" 
+            stroke-width="2"/>
+
+      <!-- Center Spine -->
+      <line x1="25" y1="10" x2="25" y2="225" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+
+      <!-- Divine Gem at Vel base -->
+      <polygon points="25,210 10,230 40,230" fill="url(#goldGrad)" stroke="#744a04"/>
+      <circle cx="25" cy="223" r="5" fill="#e63946"/>
+
+      <!-- Sacred Tamil "ஓம்" (OM) or Vel Radiance Rings -->
+      <circle cx="25" cy="100" r="15" fill="none" stroke="#fff" stroke-width="1.5" opacity="0.8"/>
+      <circle cx="25" cy="100" r="5" fill="#ffd700"/>
+    </g>
+  </g>
+
+  <!-- Golden Sparkles and Floral Dust -->
+  <g fill="#ffd700" opacity="0.8">
+    <circle cx="490" cy="70" r="2.5" />
+    <circle cx="530" cy="120" r="3" />
+    <circle cx="550" cy="60" r="2" />
+    <circle cx="460" cy="110" r="2.5" />
+    <circle cx="270" cy="200" r="2.5" />
+    <circle cx="220" cy="180" r="3" />
+    <circle cx="620" cy="300" r="2" />
+    <circle cx="180" cy="380" r="2.5" />
+  </g>
+</svg>
+

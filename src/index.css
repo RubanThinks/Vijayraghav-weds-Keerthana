@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Montserrat', system-ui, sans-serif;
+    color: #fffefa;
+    background-color: #1F0212;
+    overflow-x: hidden;
+  }
+
+  body {
+    overflow-x: hidden;
+    background-color: #1F0212;
+    color: #fffefa;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Snap scrolling enabled on large screens only to prevent mobile gaps */
+  @media (min-width: 1024px) {
+    html, body {
+      scroll-snap-type: y proximity;
+    }
+  }
+
+  /* Custom subtle scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #1c0317;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #d4af37;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #f8e7b7;
+  }
+}
+
+@layer utilities {
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #fffdf2 0%, #fae6b2 25%, #d4af37 55%, #aa8322 85%, #f6df99 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+    padding-top: 0.15em;
+    padding-bottom: 0.15em;
+    padding-left: 0.06em;
+    padding-right: 0.06em;
+    overflow: visible;
+  }
+
+  .text-gold-subtle {
+    background: linear-gradient(135deg, #fffaf0 0%, #dfbc55 60%, #b59227 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-shadow-deep {
+    text-shadow: 0 2px 14px rgba(10, 0, 8, 0.95), 0 1px 3px rgba(10, 0, 8, 0.9);
+  }
+
+  .text-shadow-gold {
+    text-shadow: 0 2px 18px rgba(212, 175, 55, 0.45), 0 1px 3px rgba(10, 0, 8, 0.95);
+  }
+
+  .border-gold-gradient {
+    border-image: linear-gradient(to right, transparent, #d4af37 50%, transparent) 1;
+  }
+
+  .border-gold-subtle {
+    border-color: rgba(212, 175, 55, 0.35);
+  }
+
+  .gold-box-shadow {
+    box-shadow: 0 10px 40px -10px rgba(212, 175, 55, 0.25), 0 0 1px 1px rgba(212, 175, 55, 0.35);
+  }
+
+  .gold-glow {
+    filter: drop-shadow(0 0 18px rgba(212, 175, 55, 0.55));
+  }
+}
+
+/* Botanical animations & leaf float */
+@keyframes petalFall {
+  0% {
+    transform: translateY(-20px) rotate(0deg) translateX(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(105vh) rotate(360deg) translateX(40px);
+    opacity: 0;
+  }
+}
+
+.petal-particle {
+  position: absolute;
+  pointer-events: none;
+  animation: petalFall linear infinite;
+}
+
+/* Solid semi-transparent royal wine card with NO BLUR on the underlying raw background */
+.luxury-card {
+  background: linear-gradient(135deg, rgba(38, 4, 32, 0.9) 0%, rgba(24, 2, 20, 0.94) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.32);
+  box-shadow: 0 16px 40px rgba(10, 0, 8, 0.7), inset 0 1px 0 rgba(255, 245, 210, 0.15);
+}
+
+.luxury-card-gold {
+  background: linear-gradient(135deg, rgba(48, 6, 40, 0.92) 0%, rgba(26, 3, 22, 0.96) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  box-shadow: 0 16px 45px rgba(12, 0, 9, 0.75), inset 0 0 25px rgba(212, 175, 55, 0.15);
+}
+
+/* Section Container - Seamless 100% Full Viewport on Mobile with Zero Gaps */
+.screen-section {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 1024px) {
+  .screen-section {
+    height: 100vh;
+    height: 100dvh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+}

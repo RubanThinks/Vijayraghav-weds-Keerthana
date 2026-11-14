@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <defs>
+    <!-- Petal soft watercolor gradients -->
+    <radialGradient id="roseCenter" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff0d4" stop-opacity="0.95"/>
+      <stop offset="30%" stop-color="#fae7cb" stop-opacity="0.9"/>
+      <stop offset="70%" stop-color="#f5ede1" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.8"/>
+    </radialGradient>
+    <radialGradient id="petalGrad1" cx="40%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="65%" stop-color="#fdf8f0" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#eddac6" stop-opacity="0.75"/>
+    </radialGradient>
+    <radialGradient id="goldDust" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe8a1"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </radialGradient>
+    <filter id="watercolorBlur" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Surrounding Leaves -->
+  <g id="surroundingLeaves">
+    <!-- Leaf 1 -->
+    <path d="M 120 120 C 80 80, 50 120, 70 170 C 100 160, 120 140, 120 120 Z" fill="#889e86" opacity="0.8"/>
+    <path d="M 70 170 L 105 130" stroke="#f2e2b8" stroke-width="1.2" opacity="0.6"/>
+
+    <!-- Leaf 2 -->
+    <path d="M 280 110 C 320 70, 360 100, 340 150 C 310 145, 290 130, 280 110 Z" fill="#6d836b" opacity="0.75"/>
+    
+    <!-- Leaf 3 (Sage) -->
+    <path d="M 100 270 C 60 300, 80 350, 130 340 C 130 310, 120 280, 100 270 Z" fill="#7a9178" opacity="0.8"/>
+
+    <!-- Leaf 4 (Eucalyptus with gold trim) -->
+    <path d="M 300 280 C 340 310, 330 360, 280 350 C 270 320, 280 290, 300 280 Z" fill="#586c56" opacity="0.8"/>
+  </g>
+
+  <!-- Large Watercolor White English Rose Composition -->
+  <g id="roseBloom" filter="url(#watercolorBlur)" transform="translate(0, 0)">
+    <!-- Outermost Soft Petals -->
+    <path d="M 200 80 C 270 70, 310 140, 290 190 C 250 170, 220 150, 200 80 Z" fill="url(#petalGrad1)" stroke="#e8d5be" stroke-width="1" opacity="0.9"/>
+    <path d="M 110 180 C 80 120, 150 70, 200 85 C 180 140, 150 170, 110 180 Z" fill="url(#petalGrad1)" stroke="#e8d5be" stroke-width="1" opacity="0.9"/>
+    
+    <path d="M 290 180 C 340 230, 310 310, 240 310 C 240 250, 270 200, 290 180 Z" fill="url(#petalGrad1)" stroke="#e8d5be" stroke-width="1" opacity="0.9"/>
+    <path d="M 110 200 C 70 260, 130 320, 180 320 C 160 260, 130 220, 110 200 Z" fill="url(#petalGrad1)" stroke="#e8d5be" stroke-width="1" opacity="0.9"/>
+
+    <path d="M 160 315 C 200 350, 250 340, 260 305 C 220 310, 180 315, 160 315 Z" fill="url(#petalGrad1)" stroke="#e8d5be" stroke-width="1" opacity="0.92"/>
+
+    <!-- Mid Layer Petals -->
+    <path d="M 150 140 C 200 110, 250 120, 270 170 C 220 160, 180 160, 150 140 Z" fill="url(#roseCenter)" stroke="#dcc5ac" stroke-width="1.2"/>
+    <path d="M 130 170 C 130 230, 180 270, 230 260 C 200 230, 170 200, 130 170 Z" fill="url(#roseCenter)" stroke="#dcc5ac" stroke-width="1.2"/>
+    <path d="M 265 170 C 280 230, 230 270, 180 270 C 220 250, 250 210, 265 170 Z" fill="url(#roseCenter)" stroke="#dcc5ac" stroke-width="1.2"/>
+
+    <!-- Inner Swirled Rose Petals -->
+    <path d="M 170 180 C 190 160, 220 160, 235 185 C 215 195, 185 195, 170 180 Z" fill="#faebd7" stroke="#caa98b" stroke-width="1.2"/>
+    <path d="M 180 200 C 170 220, 210 240, 230 220 C 235 200, 200 190, 180 200 Z" fill="#faebd7" stroke="#caa98b" stroke-width="1.2"/>
+    <path d="M 190 190 C 200 180, 215 185, 218 198 C 210 205, 195 200, 190 190 Z" fill="#ebd0af" stroke="#caa98b" stroke-width="1.2"/>
+
+    <!-- Golden Stamen and Pollen Specks -->
+    <circle cx="200" cy="195" r="2.5" fill="url(#goldDust)"/>
+    <circle cx="206" cy="192" r="2" fill="url(#goldDust)"/>
+    <circle cx="196" cy="198" r="1.8" fill="url(#goldDust)"/>
+    <circle cx="203" cy="202" r="2" fill="url(#goldDust)"/>
+  </g>
+</svg>
+

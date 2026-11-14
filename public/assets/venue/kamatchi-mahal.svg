@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" fill="none">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0c1730"/>
+      <stop offset="60%" stop-color="#1f112e"/>
+      <stop offset="100%" stop-color="#3b1735"/>
+    </linearGradient>
+    <linearGradient id="mahalWall" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5e6cc"/>
+      <stop offset="50%" stop-color="#deb887"/>
+      <stop offset="100%" stop-color="#c49a6c"/>
+    </linearGradient>
+    <linearGradient id="goldRoof" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff8db"/>
+      <stop offset="50%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#8a6112"/>
+    </linearGradient>
+    <radialGradient id="portalGlow" cx="50%" cy="60%" r="50%">
+      <stop offset="0%" stop-color="#ffe699" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#fca311" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Twilight Sky -->
+  <rect width="100%" height="100%" fill="url(#skyGrad)"/>
+
+  <!-- Stars in Twilight -->
+  <g fill="#ffd700" opacity="0.6">
+    <circle cx="150" cy="80" r="1.5"/>
+    <circle cx="280" cy="140" r="1.2"/>
+    <circle cx="950" cy="90" r="1.8"/>
+    <circle cx="1080" cy="130" r="1.2"/>
+    <circle cx="600" cy="60" r="1.5"/>
+  </g>
+
+  <!-- Mahal Grand Facade -->
+  <g id="mahalBuilding" transform="translate(100, 150)">
+    <!-- Main Hall Block -->
+    <rect x="100" y="250" width="800" height="350" fill="url(#mahalWall)" stroke="#8a6112" stroke-width="2"/>
+    
+    <!-- Decorative Cornice / Upper Zari Band -->
+    <rect x="80" y="230" width="840" height="20" fill="url(#goldRoof)"/>
+    <path d="M 80 230 L 920 230" stroke="#fff" stroke-width="2"/>
+
+    <!-- Central Gopuram / Arch Tower -->
+    <!-- Tier 1 -->
+    <path d="M 380 230 L 410 130 L 590 130 L 620 230 Z" fill="url(#mahalWall)" stroke="#8a6112" stroke-width="2"/>
+    <!-- Tier 2 -->
+    <path d="M 420 130 L 445 60 L 555 60 L 580 130 Z" fill="url(#mahalWall)" stroke="#8a6112" stroke-width="2"/>
+    <!-- Kalasams on top -->
+    <path d="M 450 60 L 500 10 L 550 60 Z" fill="url(#goldRoof)" stroke="#744a04" stroke-width="1.5"/>
+    <circle cx="500" cy="8" r="6" fill="#ffd700" stroke="#fff" stroke-width="1.5"/>
+    <circle cx="475" cy="18" r="4.5" fill="#ffd700"/>
+    <circle cx="525" cy="18" r="4.5" fill="#ffd700"/>
+
+    <!-- Carved Dravidian Pillars (Thoongal) -->
+    <g fill="url(#mahalWall)" stroke="#744a04" stroke-width="1.5">
+      <!-- Left Wing Pillars -->
+      <rect x="140" y="250" width="28" height="350"/>
+      <rect x="230" y="250" width="28" height="350"/>
+      <rect x="320" y="250" width="28" height="350"/>
+      <!-- Right Wing Pillars -->
+      <rect x="650" y="250" width="28" height="350"/>
+      <rect x="740" y="250" width="28" height="350"/>
+      <rect x="830" y="250" width="28" height="350"/>
+    </g>
+
+    <!-- Grand Entrance Arch (Raja Gopura Entrance) -->
+    <path d="M 420 600 L 420 380 C 420 310, 580 310, 580 380 L 580 600 Z" fill="#150820" stroke="url(#goldRoof)" stroke-width="4"/>
+    <path d="M 435 600 L 435 390 C 435 330, 565 330, 565 390 L 565 600 Z" fill="url(#portalGlow)"/>
+
+    <!-- Signage Plaque: SHRI KAMATCHI MAHAL -->
+    <rect x="340" y="270" width="320" height="40" rx="4" fill="#0b1329" stroke="url(#goldRoof)" stroke-width="2"/>
+    <text x="500" y="297" font-family="'Cinzel', serif" font-size="19" font-weight="700" fill="url(#goldRoof)" text-anchor="middle" letter-spacing="3">SHRI KAMATCHI MAHAL</text>
+    <text x="500" y="324" font-family="'Montserrat', sans-serif" font-size="11" font-weight="600" fill="#f4e4b5" text-anchor="middle" letter-spacing="4">KARUR • TAMIL NADU</text>
+
+    <!-- Warm Illumination Lanterns (Vilakku) -->
+    <g fill="#ffd700" filter="drop-shadow(0 0 8px #ffb703)">
+      <circle cx="390" cy="380" r="8"/>
+      <circle cx="610" cy="380" r="8"/>
+      <circle cx="280" cy="380" r="6"/>
+      <circle cx="720" cy="380" r="6"/>
+    </g>
+
+    <!-- Festive Banana Trees & Garland Decor at entrance -->
+    <!-- Left Banana Tree -->
+    <path d="M 390 600 Q 370 510 330 460" stroke="#2d6a4f" stroke-width="12" stroke-linecap="round"/>
+    <path d="M 330 460 C 290 440, 270 480, 290 520 C 310 520, 330 490, 330 460 Z" fill="#52b788"/>
+    <!-- Right Banana Tree -->
+    <path d="M 610 600 Q 630 510 670 460" stroke="#2d6a4f" stroke-width="12" stroke-linecap="round"/>
+    <path d="M 670 460 C 710 440, 730 480, 710 520 C 690 520, 670 490, 670 460 Z" fill="#52b788"/>
+
+    <!-- Floral Marigold & Jasmine Toranam across Entrance Arch -->
+    <path d="M 400 360 Q 500 400 600 360" stroke="#f77f00" stroke-width="7" fill="none" stroke-dasharray="6 4"/>
+    <path d="M 400 360 Q 500 400 600 360" stroke="#ffffff" stroke-width="4" fill="none" stroke-dasharray="2 10"/>
+  </g>
+
+  <!-- Paved Foreground with Kolam Welcome -->
+  <rect x="0" y="720" width="1200" height="80" fill="#0c0715"/>
+  <ellipse cx="600" cy="745" rx="160" ry="25" stroke="#deb853" stroke-width="1.5" stroke-dasharray="4 4" fill="none"/>
+</svg>
+

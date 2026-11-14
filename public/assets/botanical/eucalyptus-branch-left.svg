@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 600" fill="none">
+  <defs>
+    <linearGradient id="stemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8a9a86"/>
+      <stop offset="60%" stop-color="#556b50"/>
+      <stop offset="100%" stop-color="#344832"/>
+    </linearGradient>
+    <linearGradient id="leafGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b8cbb4"/>
+      <stop offset="50%" stop-color="#829a7e"/>
+      <stop offset="100%" stop-color="#5a7056"/>
+    </linearGradient>
+    <linearGradient id="leafGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4e2d2"/>
+      <stop offset="60%" stop-color="#9eb29a"/>
+      <stop offset="100%" stop-color="#6d8369"/>
+    </linearGradient>
+    <linearGradient id="goldAcc" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdf4d6"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Curving Stem -->
+  <path d="M 260 590 Q 230 450 180 340 T 140 180 Q 120 90 90 20" stroke="url(#stemGrad)" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- Eucalyptus Leaves Left & Right along the stem -->
+  <!-- Top Leaf -->
+  <ellipse cx="90" cy="20" rx="16" ry="24" transform="rotate(-25 90 20)" fill="url(#leafGrad2)" opacity="0.9"/>
+  <path d="M 90 44 L 90 5" stroke="url(#goldAcc)" stroke-width="1" opacity="0.6"/>
+
+  <!-- Leaf Pair 1 -->
+  <ellipse cx="110" cy="70" rx="22" ry="32" transform="rotate(40 110 70)" fill="url(#leafGrad1)" opacity="0.88"/>
+  <ellipse cx="80" cy="90" rx="20" ry="30" transform="rotate(-45 80 90)" fill="url(#leafGrad2)" opacity="0.85"/>
+
+  <!-- Leaf Pair 2 -->
+  <ellipse cx="145" cy="140" rx="26" ry="38" transform="rotate(35 145 140)" fill="url(#leafGrad2)" opacity="0.88"/>
+  <ellipse cx="95" cy="165" rx="25" ry="36" transform="rotate(-50 95 165)" fill="url(#leafGrad1)" opacity="0.85"/>
+
+  <!-- Leaf Pair 3 -->
+  <ellipse cx="175" cy="230" rx="30" ry="44" transform="rotate(25 175 230)" fill="url(#leafGrad1)" opacity="0.9"/>
+  <ellipse cx="115" cy="255" rx="28" ry="42" transform="rotate(-40 115 255)" fill="url(#leafGrad2)" opacity="0.88"/>
+
+  <!-- Leaf Pair 4 -->
+  <ellipse cx="205" cy="330" rx="34" ry="48" transform="rotate(30 205 330)" fill="url(#leafGrad2)" opacity="0.92"/>
+  <ellipse cx="140" cy="360" rx="32" ry="46" transform="rotate(-35 140 360)" fill="url(#leafGrad1)" opacity="0.88"/>
+
+  <!-- Leaf Pair 5 -->
+  <ellipse cx="240" cy="440" rx="36" ry="52" transform="rotate(20 240 440)" fill="url(#leafGrad1)" opacity="0.9"/>
+  <ellipse cx="170" cy="470" rx="34" ry="50" transform="rotate(-30 170 470)" fill="url(#leafGrad2)" opacity="0.85"/>
+
+  <!-- Small Gold Botanical Berries -->
+  <circle cx="120" cy="50" r="4" fill="url(#goldAcc)"/>
+  <circle cx="130" cy="60" r="3" fill="url(#goldAcc)"/>
+  <circle cx="160" cy="120" r="4.5" fill="url(#goldAcc)"/>
+  <circle cx="175" cy="130" r="3.5" fill="url(#goldAcc)"/>
+  <circle cx="195" cy="210" r="4" fill="url(#goldAcc)"/>
+</svg>
+

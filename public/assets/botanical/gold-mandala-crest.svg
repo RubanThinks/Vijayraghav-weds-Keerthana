@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <defs>
+    <linearGradient id="crestGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff8db"/>
+      <stop offset="35%" stop-color="#ffd700"/>
+      <stop offset="70%" stop-color="#d4af37"/>
+      <stop offset="100%" stop-color="#8c6414"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(200, 200)">
+    <!-- Outer Rings -->
+    <circle cx="0" cy="0" r="180" stroke="url(#crestGold)" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.6"/>
+    <circle cx="0" cy="0" r="170" stroke="url(#crestGold)" stroke-width="1" opacity="0.4"/>
+    <circle cx="0" cy="0" r="150" stroke="url(#crestGold)" stroke-width="2" opacity="0.8"/>
+
+    <!-- 12 Petal Lotus Mandala -->
+    <g stroke="url(#crestGold)" stroke-width="1.5" fill="none" opacity="0.85">
+      <!-- 12 Petal Loops -->
+      <path d="M 0 -150 C -35 -110, -35 -80, 0 -60 C 35 -80, 35 -110, 0 -150 Z" />
+      <path d="M 0 150 C -35 110, -35 80, 0 60 C 35 80, 35 110, 0 150 Z" />
+      <path d="M -150 0 C -110 -35, -80 -35, -60 0 C -80 35, -110 35, -150 0 Z" />
+      <path d="M 150 0 C 110 -35, 80 -35, 60 0 C 80 35, 110 35, 150 0 Z" />
+      
+      <!-- Diagonals -->
+      <g transform="rotate(30)">
+        <path d="M 0 -150 C -35 -110, -35 -80, 0 -60 C 35 -80, 35 -110, 0 -150 Z" />
+        <path d="M 0 150 C -35 110, -35 80, 0 60 C 35 80, 35 110, 0 150 Z" />
+      </g>
+      <g transform="rotate(60)">
+        <path d="M 0 -150 C -35 -110, -35 -80, 0 -60 C 35 -80, 35 -110, 0 -150 Z" />
+        <path d="M 0 150 C -35 110, -35 80, 0 60 C 35 80, 35 110, 0 150 Z" />
+      </g>
+      <g transform="rotate(45)">
+        <circle cx="0" cy="-140" r="4" fill="url(#crestGold)"/>
+        <circle cx="0" cy="140" r="4" fill="url(#crestGold)"/>
+        <circle cx="-140" cy="0" r="4" fill="url(#crestGold)"/>
+        <circle cx="140" cy="0" r="4" fill="url(#crestGold)"/>
+      </g>
+    </g>
+
+    <!-- Inner Core & Monogram Ring -->
+    <circle cx="0" cy="0" r="60" stroke="url(#crestGold)" stroke-width="2" fill="#0b1329" fill-opacity="0.8"/>
+    <circle cx="0" cy="0" r="54" stroke="url(#crestGold)" stroke-width="1" stroke-dasharray="3 3"/>
+    
+    <!-- Monogram: V & K in elegant serif -->
+    <text x="0" y="14" font-family="'Cinzel', serif" font-size="34" font-weight="600" fill="url(#crestGold)" text-anchor="middle" letter-spacing="2">V &amp; K</text>
+  </g>
+</svg>
+

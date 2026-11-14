@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 60" fill="none">
+  <defs>
+    <linearGradient id="divGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d4af37" stop-opacity="0"/>
+      <stop offset="25%" stop-color="#d4af37" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#fff8db" stop-opacity="1"/>
+      <stop offset="75%" stop-color="#d4af37" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#d4af37" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Left & Right Tapered Lines -->
+  <line x1="30" y1="30" x2="250" y2="30" stroke="url(#divGold)" stroke-width="1.5"/>
+  <line x1="350" y1="30" x2="570" y2="30" stroke="url(#divGold)" stroke-width="1.5"/>
+
+  <!-- Left/Right dots -->
+  <circle cx="230" cy="30" r="2" fill="#d4af37"/>
+  <circle cx="240" cy="30" r="3" fill="#ffd700"/>
+  <circle cx="360" cy="30" r="3" fill="#ffd700"/>
+  <circle cx="370" cy="30" r="2" fill="#d4af37"/>
+
+  <!-- Center Auspicious Floral Emblem -->
+  <g transform="translate(300, 30)">
+    <!-- Central Diamond & Flower -->
+    <path d="M 0 -16 L 16 0 L 0 16 L -16 0 Z" stroke="url(#divGold)" stroke-width="1.5" fill="none"/>
+    <circle cx="0" cy="0" r="5" fill="#d4af37"/>
+    <circle cx="0" cy="0" r="2" fill="#fff"/>
+
+    <!-- Petal curves -->
+    <path d="M -16 0 C -26 -12, -26 12, -16 0" stroke="#deb853" stroke-width="1.2" fill="none"/>
+    <path d="M 16 0 C 26 -12, 26 12, 16 0" stroke="#deb853" stroke-width="1.2" fill="none"/>
+    <path d="M 0 -16 C -12 -26, 12 -26, 0 -16" stroke="#deb853" stroke-width="1.2" fill="none"/>
+    <path d="M 0 16 C -12 26, 12 26, 0 16" stroke="#deb853" stroke-width="1.2" fill="none"/>
+  </g>
+</svg>
+

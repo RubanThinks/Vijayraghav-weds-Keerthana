@@ -176,15 +176,6 @@ export const WeddingCeremonySection: React.FC = () => {
               </p>
             </div>
 
-            {/* Sacred Rituals Summary Badge */}
-            <div className="mt-2.5 flex items-center justify-center gap-2 text-[10px] font-sans tracking-wider text-gold-300/80 uppercase">
-              <span>Kanyadaanam</span>
-              <span>•</span>
-              <span>Mangalyadharanam</span>
-              <span>•</span>
-              <span>Sapthapadi</span>
-            </div>
-
             {/* Calendar Actions */}
             <div className="mt-4 flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
               <a

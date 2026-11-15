@@ -6,7 +6,6 @@ import { MeetCouple } from './components/MeetCouple';
 import { WeddingCountdown } from './components/WeddingCountdown';
 import { ReceptionSection } from './components/ReceptionSection';
 import { WeddingCeremonySection } from './components/WeddingCeremonySection';
-import { SacredRituals } from './components/SacredRituals';
 import { GuestGuide } from './components/GuestGuide';
 import { FindYourWay } from './components/FindYourWay';
 import { RsvpSection } from './components/RsvpSection';
@@ -59,10 +58,7 @@ export function App() {
         {/* SECTION 07: Wedding Ceremony (Traditional Tamil Mandapam) */}
         <WeddingCeremonySection />
 
-        {/* Sacred South Indian Wedding Rituals */}
-        <SacredRituals />
-
-        {/* Guest Concierge: Travel, Stay & Attire */}
+        {/* Guest Concierge: Travel & Stay */}
         <GuestGuide />
 
         {/* SECTION 08: Venue and Directions */}

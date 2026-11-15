@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ArrowUp, Sparkles, MapPin, Calendar, Heart, Clock, BookOpen, CalendarCheck } from 'lucide-react';
+import { Menu, X, ArrowUp, Sparkles, MapPin, Calendar, Heart, Clock, CalendarCheck } from 'lucide-react';
 import { MonogramVK } from './MonogramVK';
 
 interface NavigationProps {
@@ -30,7 +30,6 @@ export const Navigation: React.FC<NavigationProps> = ({ onReplayIntro }) => {
     { label: 'Countdown', href: '#countdown', icon: Clock },
     { label: 'Reception', href: '#reception', icon: Calendar },
     { label: 'Muhurtham', href: '#ceremony', icon: Calendar },
-    { label: 'Rituals', href: '#rituals', icon: BookOpen },
     { label: 'Venue & Map', href: '#venue', icon: MapPin },
     { label: 'RSVP', href: '#rsvp', icon: CalendarCheck },
   ];

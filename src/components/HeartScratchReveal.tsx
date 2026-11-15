@@ -15,16 +15,17 @@ interface Particle {
   vRot: number;
 }
 
-interface GlitterSparkle {
+interface GlitterFacet {
   x: number;
   y: number;
   size: number;
   color: string;
   speed: number;
   phase: number;
-  maxBrightness: number;
-  hasStarFlare: boolean;
-  flareRays: number;
+  isStarGlint: boolean;
+  baseAlpha: number;
+  peakAlpha: number;
+  starRays: number;
 }
 
 interface ScratchDust {
@@ -46,7 +47,7 @@ export const HeartScratchReveal: React.FC = () => {
 
   // In-memory offscreen buffers
   const maskCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const foilTextureCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const baseFoilCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const animFrameRef = useRef<number | null>(null);
 
   const [isRevealed, setIsRevealed] = useState<boolean>(false);
@@ -56,11 +57,12 @@ export const HeartScratchReveal: React.FC = () => {
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
 
   // Active particle lists & pointers
-  const glitterSparklesRef = useRef<GlitterSparkle[]>([]);
+  const glitterFacetsRef = useRef<GlitterFacet[]>([]);
   const scratchDustRef = useRef<ScratchDust[]>([]);
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
   const isScratchingRef = useRef<boolean>(false);
   const prefersReducedMotionRef = useRef<boolean>(false);
+  const dprRef = useRef<number>(1);
 
   // Responsive device check & accessibility motion preference
   useEffect(() => {
@@ -108,155 +110,117 @@ export const HeartScratchReveal: React.FC = () => {
     return path;
   };
 
-  // Generate ultra-dense physical gold glitter foil base (25,000+ faceted metallic flakes with 3D micro-depth)
-  const buildRealisticGlitterFoil = (w: number, h: number): HTMLCanvasElement => {
-    const foilCanvas = document.createElement('canvas');
-    foilCanvas.width = w;
-    foilCanvas.height = h;
-    const ctx = foilCanvas.getContext('2d');
-    if (!ctx) return foilCanvas;
+  // Generate deep, high-contrast metallic gold foil base texture (warm bronze depths + 24K highlights)
+  const buildBaseFoilTexture = (w: number, h: number, dpr: number): HTMLCanvasElement => {
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return canvas;
 
+    ctx.scale(dpr, dpr);
     const heartPath = createHeartPath(w, h);
 
     ctx.save();
     ctx.clip(heartPath);
 
-    // 1. Warm 24K Radiant Gold Metallic Base
-    const baseGrad = ctx.createRadialGradient(w * 0.5, h * 0.45, w * 0.1, w * 0.5, h * 0.5, w * 0.75);
-    baseGrad.addColorStop(0, '#fae596');
-    baseGrad.addColorStop(0.35, '#d4af37');
-    baseGrad.addColorStop(0.7, '#a87e22');
-    baseGrad.addColorStop(1, '#664306');
+    // 1. Deep Metallic Gold Satin Gradient
+    const baseGrad = ctx.createLinearGradient(0, 0, w, h);
+    baseGrad.addColorStop(0, '#5a3a06');
+    baseGrad.addColorStop(0.18, '#9e731b');
+    baseGrad.addColorStop(0.38, '#d8b244');
+    baseGrad.addColorStop(0.55, '#fae69e');
+    baseGrad.addColorStop(0.72, '#b88924');
+    baseGrad.addColorStop(0.88, '#7e5310');
+    baseGrad.addColorStop(1, '#4e3104');
     ctx.fillStyle = baseGrad;
     ctx.fillRect(0, 0, w, h);
 
-    // 2. High-Density Micro-Faceted Glitter Flakes (Layered for physical 3D glitter paper appearance)
-    const area = w * h;
-    const coarseCount = Math.floor(area / 16);
-    const fineCount = Math.floor(area / 7);
-    const specularCount = Math.floor(area / 24);
+    // 2. Dense Micro-Granular Glitter Flake Background (Creates physical crushed foil bed)
+    const flakeCount = Math.floor((w * h) / 12);
+    const goldTones = ['#4a2e04', '#7c530e', '#a87a1d', '#d4af37', '#ffd700', '#fae188', '#fff5cc'];
 
-    const shadowGold = ['#7c530e', '#966714', '#af7d1c', '#c29026'];
-    const vibrantGold = ['#ffd700', '#fad02c', '#f5ce3b', '#e6ba29', '#ffe47a'];
-    const champagneHighlights = ['#ffffff', '#fffbe6', '#fdf7d9', '#f7dfb3', '#fff3c4'];
-
-    // Layer A: Deep bronze/amber shadow flakes for physical depth
-    for (let i = 0; i < coarseCount; i++) {
+    for (let i = 0; i < flakeCount; i++) {
       const fx = Math.random() * w;
       const fy = Math.random() * h;
-      const size = Math.random() * 2.3 + 1.2;
-      ctx.fillStyle = shadowGold[Math.floor(Math.random() * shadowGold.length)];
-      ctx.globalAlpha = Math.random() * 0.65 + 0.35;
-      ctx.beginPath();
-      ctx.arc(fx, fy, size, 0, Math.PI * 2);
-      ctx.fill();
-    }
+      const size = Math.random() * 2.0 + 0.8;
+      const col = goldTones[Math.floor(Math.random() * goldTones.length)];
 
-    // Layer B: Dense faceted 24K gold flakes with micro-relief bevels
-    for (let i = 0; i < fineCount; i++) {
-      const fx = Math.random() * w;
-      const fy = Math.random() * h;
-      const size = Math.random() * 2.4 + 0.8;
-      const color = vibrantGold[Math.floor(Math.random() * vibrantGold.length)];
+      ctx.fillStyle = col;
+      ctx.globalAlpha = Math.random() * 0.65 + 0.25;
 
-      // 3D micro drop-shadow behind each flake
-      ctx.fillStyle = 'rgba(60, 35, 4, 0.4)';
-      ctx.globalAlpha = 0.38;
-      ctx.fillRect(fx + 0.6, fy + 0.6, size, size);
-
-      // Metallic flake
-      ctx.fillStyle = color;
-      ctx.globalAlpha = Math.random() * 0.75 + 0.25;
-
-      if (Math.random() > 0.4) {
-        // Hexagonal / faceted flake
-        ctx.beginPath();
-        const rot = Math.random() * Math.PI;
-        for (let p = 0; p < 6; p++) {
-          const ang = rot + (p * Math.PI) / 3;
-          const px = fx + Math.cos(ang) * size;
-          const py = fy + Math.sin(ang) * size;
-          if (p === 0) ctx.moveTo(px, py);
-          else ctx.lineTo(px, py);
-        }
-        ctx.closePath();
-        ctx.fill();
-      } else {
+      if (Math.random() > 0.5) {
         ctx.fillRect(fx, fy, size, size);
+      } else {
+        ctx.beginPath();
+        ctx.arc(fx, fy, size * 0.5, 0, Math.PI * 2);
+        ctx.fill();
       }
-    }
-
-    // Layer C: Specular diamond micro-crystals that catch ambient light
-    for (let i = 0; i < specularCount; i++) {
-      const fx = Math.random() * w;
-      const fy = Math.random() * h;
-      const size = Math.random() * 1.8 + 0.6;
-      ctx.fillStyle = champagneHighlights[Math.floor(Math.random() * champagneHighlights.length)];
-      ctx.globalAlpha = Math.random() * 0.85 + 0.15;
-      ctx.beginPath();
-      ctx.arc(fx, fy, size * 0.8, 0, Math.PI * 2);
-      ctx.fill();
     }
 
     ctx.globalAlpha = 1.0;
 
-    // 3. Stamped Golden Foil Beveled Rim along the Heart Perimeter
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = 'rgba(255, 240, 160, 0.85)';
+    // 3. Crisp Embossed Gold Border Stamped Rim
+    ctx.lineWidth = 3.5;
+    ctx.strokeStyle = 'rgba(255, 235, 140, 0.9)';
     ctx.stroke(heartPath);
 
     ctx.lineWidth = 1.5;
-    ctx.strokeStyle = 'rgba(160, 115, 20, 0.7)';
+    ctx.strokeStyle = 'rgba(140, 95, 12, 0.75)';
     ctx.stroke(heartPath);
 
     ctx.restore();
-    return foilCanvas;
+    return canvas;
   };
 
-  // Seed dynamic twinkling glitter particles strictly within the heart shape
-  const initGlitterSparkles = (w: number, h: number, heartPath: Path2D) => {
+  // Seed dynamic glittering facets distributed strictly inside the heart
+  const initGlitterFacets = (w: number, h: number, heartPath: Path2D) => {
     const testCanvas = document.createElement('canvas');
     testCanvas.width = w;
     testCanvas.height = h;
     const testCtx = testCanvas.getContext('2d');
     if (!testCtx) return;
 
-    const sparkles: GlitterSparkle[] = [];
-    const count = isDesktop ? 135 : 85;
+    const count = isDesktop ? 480 : 320;
+    const facets: GlitterFacet[] = [];
 
-    const sparkleColors = [
+    const palette = [
       '#ffffff', // Diamond white
-      '#fffdf2', // Starlight white
-      '#f7dfb3', // Champagne gold
-      '#ffe5a3', // Soft champagne
+      '#ffffff', // Pure white sparkle
+      '#fffdf0', // Starlight white
+      '#fbf0c8', // Champagne ivory
+      '#f7dfb3', // Warm champagne
+      '#ffe285', // Pale gold
       '#ffd700', // Bright 24K gold
-      '#ffcc00', // Vibrant gold
-      '#e0b477', // Soft antique gold
+      '#ffcc00', // Intense gold
+      '#e5b342', // Rich gold
     ];
 
-    for (let attempts = 0; attempts < 600 && sparkles.length < count; attempts++) {
+    for (let attempts = 0; attempts < 1800 && facets.length < count; attempts++) {
       const x = Math.random() * w;
       const y = Math.random() * h;
       if (testCtx.isPointInPath(heartPath, x, y)) {
-        sparkles.push({
+        const isStar = Math.random() < 0.18; // ~18% are prominent starburst flares
+        facets.push({
           x,
           y,
-          size: Math.random() * 2.8 + 1.2,
-          color: sparkleColors[Math.floor(Math.random() * sparkleColors.length)],
-          speed: Math.random() * 0.05 + 0.02,
+          size: isStar ? Math.random() * 2.8 + 2.0 : Math.random() * 2.2 + 1.0,
+          color: palette[Math.floor(Math.random() * palette.length)],
+          speed: Math.random() * 0.055 + 0.025,
           phase: Math.random() * Math.PI * 2,
-          maxBrightness: Math.random() * 0.45 + 0.55,
-          hasStarFlare: Math.random() > 0.45,
-          flareRays: Math.random() > 0.3 ? 4 : 6,
+          isStarGlint: isStar,
+          baseAlpha: Math.random() * 0.15 + 0.05,
+          peakAlpha: Math.random() * 0.35 + 0.65,
+          starRays: Math.random() > 0.3 ? 4 : 6,
         });
       }
     }
 
-    glitterSparklesRef.current = sparkles;
+    glitterFacetsRef.current = facets;
   };
 
-  // Render a natural optical starburst / cross glint
-  const drawStarFlare = (
+  // Draw an optical starburst diffraction cross glint
+  const drawStarGlint = (
     ctx: CanvasRenderingContext2D,
     x: number,
     y: number,
@@ -265,32 +229,35 @@ export const HeartScratchReveal: React.FC = () => {
     rays: number,
     color: string
   ) => {
-    if (alpha <= 0.02) return;
+    if (alpha <= 0.05) return;
     ctx.save();
     ctx.translate(x, y);
-    ctx.globalAlpha = alpha;
+    ctx.globalAlpha = Math.min(1.0, alpha);
 
-    // Glowing center bloom
-    const radial = ctx.createRadialGradient(0, 0, 0, 0, 0, size * 1.6);
-    radial.addColorStop(0, '#ffffff');
-    radial.addColorStop(0.4, color);
-    radial.addColorStop(1, 'rgba(255, 215, 0, 0)');
-    ctx.fillStyle = radial;
+    // Radiant core bloom
+    const glowRad = ctx.createRadialGradient(0, 0, 0, 0, 0, size * 2.0);
+    glowRad.addColorStop(0, '#ffffff');
+    glowRad.addColorStop(0.35, color);
+    glowRad.addColorStop(1, 'rgba(255, 215, 0, 0)');
+    ctx.fillStyle = glowRad;
     ctx.beginPath();
-    ctx.arc(0, 0, size * 1.6, 0, Math.PI * 2);
+    ctx.arc(0, 0, size * 2.0, 0, Math.PI * 2);
     ctx.fill();
 
     // Sharp cross diffraction rays
     ctx.fillStyle = '#ffffff';
+    const rayLength = size * 3.5;
+    const rayWidth = size * 0.35;
+
     for (let r = 0; r < rays; r++) {
       const angle = (r * Math.PI) / (rays / 2);
       ctx.save();
       ctx.rotate(angle);
       ctx.beginPath();
-      ctx.moveTo(-size * 3.0, 0);
-      ctx.lineTo(0, -size * 0.3);
-      ctx.lineTo(size * 3.0, 0);
-      ctx.lineTo(0, size * 0.3);
+      ctx.moveTo(-rayLength, 0);
+      ctx.lineTo(0, -rayWidth);
+      ctx.lineTo(rayLength, 0);
+      ctx.lineTo(0, rayWidth);
       ctx.closePath();
       ctx.fill();
       ctx.restore();
@@ -406,7 +373,7 @@ export const HeartScratchReveal: React.FC = () => {
       let erasedCount = 0;
       let totalCount = 0;
 
-      // Sample every 16th pixel for mobile efficiency
+      // Sample every 16th pixel for mobile performance
       for (let i = 3; i < data.length; i += 16) {
         if (data[i] !== undefined) {
           totalCount++;
@@ -448,16 +415,17 @@ export const HeartScratchReveal: React.FC = () => {
     }
   };
 
-  // Erase with smooth interpolation and realistic feathered/soft fading edge
+  // Erase scratch line on the mask with smooth interpolation and realistic feathered/soft fading edge
   const eraseOnMaskWithFadedEdge = (x1: number, y1: number, x2: number, y2: number) => {
     const mask = maskCanvasRef.current;
     if (!mask) return;
     const ctx = mask.getContext('2d');
     if (!ctx) return;
 
-    const brushRadius = isDesktop ? 26 : 22;
-    const dist = Math.hypot(x2 - x1, y2 - y1);
-    const step = Math.max(4, brushRadius * 0.35);
+    const dpr = dprRef.current;
+    const brushRadius = (isDesktop ? 26 : 22) * dpr;
+    const dist = Math.hypot((x2 - x1) * dpr, (y2 - y1) * dpr);
+    const step = Math.max(4, brushRadius * 0.3);
     const steps = Math.max(1, Math.ceil(dist / step));
 
     ctx.save();
@@ -465,8 +433,8 @@ export const HeartScratchReveal: React.FC = () => {
 
     for (let s = 0; s <= steps; s++) {
       const t = steps === 0 ? 0 : s / steps;
-      const cx = x1 + (x2 - x1) * t;
-      const cy = y1 + (y2 - y1) * t;
+      const cx = (x1 + (x2 - x1) * t) * dpr;
+      const cy = (y1 + (y2 - y1) * t) * dpr;
 
       // Radial gradient brush with realistic soft feathered edge falloff
       const brushGrad = ctx.createRadialGradient(cx, cy, brushRadius * 0.45, cx, cy, brushRadius);
@@ -484,7 +452,7 @@ export const HeartScratchReveal: React.FC = () => {
     ctx.restore();
   };
 
-  // Initialize both offscreen canvases and start the 60fps shimmer animation loop
+  // Initialize canvases with High-DPI (Retina) support and launch the 60fps render loop
   const initCanvases = useCallback(() => {
     const canvas = canvasRef.current;
     const container = heartContainerRef.current;
@@ -495,45 +463,56 @@ export const HeartScratchReveal: React.FC = () => {
     const h = Math.round(rect.height);
     if (w <= 0 || h <= 0) return;
 
-    canvas.width = w;
-    canvas.height = h;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    dprRef.current = dpr;
+
+    // Canvas buffer sizing with devicePixelRatio for razor-sharp glitter
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.width = `${w}px`;
+    canvas.style.height = `${h}px`;
 
     // 1. Offscreen Scratch Mask (starts filled with solid white)
     const mask = document.createElement('canvas');
-    mask.width = w;
-    mask.height = h;
+    mask.width = Math.round(w * dpr);
+    mask.height = Math.round(h * dpr);
     const maskCtx = mask.getContext('2d');
     if (maskCtx) {
+      maskCtx.scale(dpr, dpr);
       const heartPath = createHeartPath(w, h);
       maskCtx.fillStyle = '#ffffff';
       maskCtx.fill(heartPath);
     }
     maskCanvasRef.current = mask;
 
-    // 2. Offscreen High-Density Golden Glitter Foil Texture (generated once & cached)
-    foilTextureCanvasRef.current = buildRealisticGlitterFoil(w, h);
+    // 2. Offscreen High-Density Golden Glitter Foil Base (cached texture)
+    baseFoilCanvasRef.current = buildBaseFoilTexture(w, h, dpr);
 
     // 3. Seed dynamic glittering particles inside the heart
     const heartPath = createHeartPath(w, h);
-    initGlitterSparkles(w, h, heartPath);
+    initGlitterFacets(w, h, heartPath);
 
     // Cancel any existing animation frame
     if (animFrameRef.current) {
       cancelAnimationFrame(animFrameRef.current);
     }
 
-    // 60fps Dynamic Glitter, Specular Sheen & Twinkle Render Loop
+    // 60fps Dynamic Glitter, Specular Light Sheen & Twinkle Render Loop
     const renderLoop = (now: number) => {
       const ctx = canvas.getContext('2d');
       const maskCanvas = maskCanvasRef.current;
-      const foilCanvas = foilTextureCanvasRef.current;
+      const baseFoil = baseFoilCanvasRef.current;
 
-      if (!ctx || !maskCanvas || !foilCanvas) return;
+      if (!ctx || !maskCanvas || !baseFoil) return;
 
-      ctx.clearRect(0, 0, w, h);
+      // Clear full buffer
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save();
+      ctx.scale(dpr, dpr);
 
       // Step A: Draw the Base Pre-rendered Metallic Glitter Foil
-      ctx.drawImage(foilCanvas, 0, 0);
+      ctx.drawImage(baseFoil, 0, 0, w, h);
 
       const reducedMotion = prefersReducedMotionRef.current;
 
@@ -541,56 +520,67 @@ export const HeartScratchReveal: React.FC = () => {
       ctx.save();
       ctx.clip(heartPath);
 
-      // Diagonal axis angle ~40 degrees
+      // Diagonal axis angle ~45 degrees, continuous loop every ~3.2 seconds
       const sheenCycle = reducedMotion ? 0.5 : ((now * 0.00032) % 1.7) - 0.35;
       const sheenX = sheenCycle * w * 2.2 - w * 0.6;
-      const sheenY = sheenCycle * h * 1.5 - h * 0.2;
-      const sheenWidth = w * 0.65;
+      const sheenY = sheenCycle * h * 1.5 - h * 0.25;
+      const sheenWidth = w * 0.55;
 
-      const sheenGrad = ctx.createLinearGradient(sheenX, sheenY, sheenX + sheenWidth, sheenY + sheenWidth * 0.75);
+      const sheenGrad = ctx.createLinearGradient(sheenX, sheenY, sheenX + sheenWidth, sheenY + sheenWidth);
       sheenGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
-      sheenGrad.addColorStop(0.35, 'rgba(255, 248, 220, 0.4)');
-      sheenGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.85)');
-      sheenGrad.addColorStop(0.65, 'rgba(255, 248, 220, 0.4)');
+      sheenGrad.addColorStop(0.3, 'rgba(255, 245, 195, 0.35)');
+      sheenGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.75)');
+      sheenGrad.addColorStop(0.7, 'rgba(255, 245, 195, 0.35)');
       sheenGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
-      ctx.globalCompositeOperation = 'color-dodge';
+      // Visually striking light reflection using screen blending
+      ctx.globalCompositeOperation = 'screen';
       ctx.fillStyle = sheenGrad;
       ctx.fillRect(0, 0, w, h);
       ctx.restore();
 
       // Step C: Animated Twinkling Glitter Particles (Natural non-uniform glints)
-      glitterSparklesRef.current.forEach((sparkle) => {
+      ctx.save();
+      ctx.clip(heartPath);
+
+      const facets = glitterFacetsRef.current;
+      const sheenCenterCoord = sheenX * 0.7 + sheenY * 0.7 + sheenWidth * 0.5;
+
+      for (let i = 0; i < facets.length; i++) {
+        const facet = facets[i];
+
         if (!reducedMotion) {
-          sparkle.phase += sparkle.speed;
+          facet.phase += facet.speed;
         }
 
-        // Natural non-linear glint curve (power of 8 gives sharp specular flashes rather than uniform blinking)
-        const naturalSine = Math.sin(sparkle.phase);
-        const glintFactor = Math.pow(Math.max(0, naturalSine), 8);
+        // Natural non-linear glint curve (power of 6 gives sharp specular flashes)
+        const naturalSine = Math.sin(facet.phase);
+        const glintFactor = Math.pow(Math.max(0, naturalSine), 6);
 
-        // Extra illumination if the sweeping metallic sheen is passing directly over this particle
-        const sheenCenterDist = Math.abs((sparkle.x * 0.65 + sparkle.y * 0.75) - (sheenX * 0.65 + sheenY * 0.75 + sheenWidth * 0.5));
-        const sheenBoost = Math.max(0, 1 - sheenCenterDist / (sheenWidth * 0.45)) * 0.55;
+        // Specular boost when the moving light reflection passes directly over the facet
+        const facetSheenDist = Math.abs((facet.x * 0.7 + facet.y * 0.7) - sheenCenterCoord);
+        const sheenBoost = Math.max(0, 1 - facetSheenDist / (sheenWidth * 0.45)) * 0.6;
 
-        const effectiveAlpha = Math.min(1.0, glintFactor * sparkle.maxBrightness + sheenBoost);
+        const currentAlpha = Math.min(1.0, facet.baseAlpha + glintFactor * (facet.peakAlpha - facet.baseAlpha) + sheenBoost);
 
-        if (effectiveAlpha > 0.06) {
-          if (sparkle.hasStarFlare && effectiveAlpha > 0.45) {
-            drawStarFlare(ctx, sparkle.x, sparkle.y, sparkle.size * 1.5, effectiveAlpha, sparkle.flareRays, sparkle.color);
+        if (currentAlpha > 0.08) {
+          if (facet.isStarGlint && currentAlpha > 0.4) {
+            drawStarGlint(ctx, facet.x, facet.y, facet.size * 1.4, currentAlpha, facet.starRays, facet.color);
           } else {
             ctx.save();
-            ctx.globalAlpha = effectiveAlpha;
-            ctx.fillStyle = sparkle.color;
+            ctx.globalAlpha = currentAlpha;
+            ctx.fillStyle = facet.color;
             ctx.beginPath();
-            ctx.arc(sparkle.x, sparkle.y, sparkle.size * (0.8 + effectiveAlpha * 0.4), 0, Math.PI * 2);
+            ctx.arc(facet.x, facet.y, facet.size * (0.8 + currentAlpha * 0.4), 0, Math.PI * 2);
             ctx.fill();
             ctx.restore();
           }
         }
-      });
+      }
 
-      // Step D: Active Scratch Dust Particles (tactile golden dust fluttering from touch)
+      ctx.restore();
+
+      // Step D: Active Scratch Dust Particles (fluttering golden flakes)
       const dust = scratchDustRef.current;
       for (let i = dust.length - 1; i >= 0; i--) {
         const d = dust[i];
@@ -613,6 +603,8 @@ export const HeartScratchReveal: React.FC = () => {
           dust.splice(i, 1);
         }
       }
+
+      ctx.restore(); // restore dpr scale
 
       // Step E: Apply Feathered Scratch Mask (reveals the burgundy date underneath)
       ctx.globalCompositeOperation = 'destination-in';
@@ -648,8 +640,8 @@ export const HeartScratchReveal: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
-    const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
+    const x = ((e.clientX - rect.left) / rect.width) * (canvas.width / dprRef.current);
+    const y = ((e.clientY - rect.top) / rect.height) * (canvas.height / dprRef.current);
 
     lastPointRef.current = { x, y };
     eraseOnMaskWithFadedEdge(x, y, x, y);
@@ -663,8 +655,8 @@ export const HeartScratchReveal: React.FC = () => {
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
-    const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
+    const x = ((e.clientX - rect.left) / rect.width) * (canvas.width / dprRef.current);
+    const y = ((e.clientY - rect.top) / rect.height) * (canvas.height / dprRef.current);
 
     if (lastPointRef.current) {
       eraseOnMaskWithFadedEdge(lastPointRef.current.x, lastPointRef.current.y, x, y);

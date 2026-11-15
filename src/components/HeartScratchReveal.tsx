@@ -15,16 +15,50 @@ interface Particle {
   vRot: number;
 }
 
+interface TwinkleStar {
+  x: number;
+  y: number;
+  size: number;
+  alpha: number;
+  speed: number;
+  phase: number;
+  maxAlpha: number;
+  rays: number;
+}
+
+interface ScratchDust {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  alpha: number;
+  color: string;
+  life: number;
+  maxLife: number;
+}
+
 export const HeartScratchReveal: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const particleCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const heartContainerRef = useRef<HTMLDivElement | null>(null);
+
+  // In-memory offscreen canvases
+  const maskCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const foilTextureCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const animFrameRef = useRef<number | null>(null);
 
   const [isRevealed, setIsRevealed] = useState<boolean>(false);
   const [scratchPercent, setScratchPercent] = useState<number>(0);
   const [hasStartedScratching, setHasStartedScratching] = useState<boolean>(false);
   const [isDesktop, setIsDesktop] = useState<boolean>(typeof window !== 'undefined' ? window.innerWidth >= 768 : true);
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
+
+  // Active dynamic visual effects
+  const twinklesRef = useRef<TwinkleStar[]>([]);
+  const scratchDustRef = useRef<ScratchDust[]>([]);
+  const lastPointRef = useRef<{ x: number; y: number } | null>(null);
+  const isScratchingRef = useRef<boolean>(false);
 
   // Responsive device check
   useEffect(() => {
@@ -35,161 +69,211 @@ export const HeartScratchReveal: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Heart curve path helper matching the exact uploaded heart dimensions
-  const drawHeartPath = (ctx: CanvasRenderingContext2D, w: number, h: number) => {
-    ctx.beginPath();
+  // Heart curve path matching the exact uploaded heart dimensions
+  const createHeartPath = (w: number, h: number): Path2D => {
+    const path = new Path2D();
     // Top cleft center notch
-    ctx.moveTo(w * 0.5, h * 0.155);
+    path.moveTo(w * 0.5, h * 0.155);
 
-    // Left lobe top curve (reaches peak at x ~ 0.23, y ~ 0.00)
-    ctx.bezierCurveTo(w * 0.44, h * 0.02, w * 0.30, 0, w * 0.23, 0);
-    ctx.bezierCurveTo(w * 0.10, 0, 0, h * 0.10, 0, h * 0.30);
+    // Left lobe top curve
+    path.bezierCurveTo(w * 0.44, h * 0.02, w * 0.30, 0, w * 0.23, 0);
+    path.bezierCurveTo(w * 0.10, 0, 0, h * 0.10, 0, h * 0.30);
 
-    // Left flank down to bottom tip (reaches tip at x ~ 0.50, y ~ 1.00)
-    ctx.bezierCurveTo(0, h * 0.52, w * 0.20, h * 0.78, w * 0.50, h);
+    // Left flank down to bottom tip
+    path.bezierCurveTo(0, h * 0.52, w * 0.20, h * 0.78, w * 0.50, h);
 
     // Right flank up from bottom tip
-    ctx.bezierCurveTo(w * 0.80, h * 0.78, w, h * 0.52, w, h * 0.30);
+    path.bezierCurveTo(w * 0.80, h * 0.78, w, h * 0.52, w, h * 0.30);
 
-    // Right lobe top curve (reaches peak at x ~ 0.77, y ~ 0.00)
-    ctx.bezierCurveTo(w, h * 0.10, w * 0.90, 0, w * 0.77, 0);
-    ctx.bezierCurveTo(w * 0.70, 0, w * 0.56, h * 0.02, w * 0.5, h * 0.155);
+    // Right lobe top curve
+    path.bezierCurveTo(w, h * 0.10, w * 0.90, 0, w * 0.77, 0);
+    path.bezierCurveTo(w * 0.70, 0, w * 0.56, h * 0.02, w * 0.5, h * 0.155);
 
-    ctx.closePath();
+    path.closePath();
+    return path;
   };
 
-  // Generate realistic 3D shining golden glitter foil texture
-  const renderGlitterTexture = useCallback((ctx: CanvasRenderingContext2D, w: number, h: number) => {
+  // Generate hyper-realistic physical gold glitter foil texture (crushed metallic flakes + faceted bevels)
+  const buildRealisticGlitterFoil = (w: number, h: number): HTMLCanvasElement => {
+    const foilCanvas = document.createElement('canvas');
+    foilCanvas.width = w;
+    foilCanvas.height = h;
+    const ctx = foilCanvas.getContext('2d');
+    if (!ctx) return foilCanvas;
+
+    const heartPath = createHeartPath(w, h);
+
     ctx.save();
-    drawHeartPath(ctx, w, h);
-    ctx.clip();
+    ctx.clip(heartPath);
 
-    // 1. Rich 24K Shining Gold Foil Base Gradient
-    const grad = ctx.createLinearGradient(0, 0, w, h);
-    grad.addColorStop(0, '#fffbe6');
-    grad.addColorStop(0.15, '#fae188');
-    grad.addColorStop(0.35, '#d4af37');
-    grad.addColorStop(0.55, '#fff0ba');
-    grad.addColorStop(0.75, '#c99726');
-    grad.addColorStop(0.9, '#f6df99');
-    grad.addColorStop(1, '#946e19');
-    ctx.fillStyle = grad;
+    // 1. Rich Warm Metallic Gold Base
+    const baseGrad = ctx.createRadialGradient(w * 0.5, h * 0.45, w * 0.1, w * 0.5, h * 0.5, w * 0.75);
+    baseGrad.addColorStop(0, '#f9e28f');
+    baseGrad.addColorStop(0.35, '#d4af37');
+    baseGrad.addColorStop(0.7, '#a67c1e');
+    baseGrad.addColorStop(1, '#684507');
+    ctx.fillStyle = baseGrad;
     ctx.fillRect(0, 0, w, h);
 
-    // 2. High-Specular Metallic Reflection Beams (Sweeping light bands)
-    const sheen1 = ctx.createLinearGradient(0, 0, w * 0.8, h);
-    sheen1.addColorStop(0, 'rgba(255, 255, 255, 0)');
-    sheen1.addColorStop(0.35, 'rgba(255, 255, 255, 0.55)');
-    sheen1.addColorStop(0.45, 'rgba(255, 255, 255, 0.85)');
-    sheen1.addColorStop(0.55, 'rgba(255, 255, 255, 0.55)');
-    sheen1.addColorStop(1, 'rgba(255, 255, 255, 0)');
-    ctx.fillStyle = sheen1;
-    ctx.fillRect(0, 0, w, h);
+    // 2. Multi-Tier Micro-Faceted Glitter Flakes (Simulating genuine crushed foil particles)
+    const area = w * h;
+    const coarseCount = Math.floor(area / 18);
+    const fineCount = Math.floor(area / 8);
+    const specularCount = Math.floor(area / 28);
 
-    const sheen2 = ctx.createLinearGradient(w * 0.3, 0, w, h * 0.7);
-    sheen2.addColorStop(0, 'rgba(255, 250, 220, 0)');
-    sheen2.addColorStop(0.4, 'rgba(255, 250, 220, 0.45)');
-    sheen2.addColorStop(0.5, 'rgba(255, 255, 255, 0.75)');
-    sheen2.addColorStop(0.6, 'rgba(255, 250, 220, 0.45)');
-    sheen2.addColorStop(1, 'rgba(255, 250, 220, 0)');
-    ctx.fillStyle = sheen2;
-    ctx.fillRect(0, 0, w, h);
+    // Palette of genuine physical gold leaf flakes
+    const deepGoldTones = ['#8c6013', '#a8751a', '#b8860b', '#c49323'];
+    const midGoldTones = ['#ffd700', '#fad02c', '#f7d046', '#e6ba29', '#ffdf6d'];
+    const highlightTones = ['#ffffff', '#fffbe6', '#fff6cc', '#fffae8'];
 
-    // 3. Dense Sparkling Gold & Champagne Crystals (Simulating physical 3D glitter)
-    const crystalCount = Math.floor((w * h) / 24);
-    const glitterColors = [
-      '#ffffff',
-      '#fffdf0',
-      '#fff2b2',
-      '#ffe57f',
-      '#ffd700',
-      '#d4af37',
-      '#e5c158',
-      '#f9e076',
-      '#b8860b',
-    ];
+    // Layer A: Under-layer deep bronze/amber shadow flakes
+    for (let i = 0; i < coarseCount; i++) {
+      const fx = Math.random() * w;
+      const fy = Math.random() * h;
+      const size = Math.random() * 2.2 + 1.2;
+      ctx.fillStyle = deepGoldTones[Math.floor(Math.random() * deepGoldTones.length)];
+      ctx.globalAlpha = Math.random() * 0.6 + 0.3;
+      ctx.beginPath();
+      ctx.arc(fx, fy, size, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
-    for (let i = 0; i < crystalCount; i++) {
-      const px = Math.random() * w;
-      const py = Math.random() * h;
-      const size = Math.random() * 2.4 + 0.6;
-      const color = glitterColors[Math.floor(Math.random() * glitterColors.length)];
-      const alpha = Math.random() * 0.85 + 0.15;
+    // Layer B: Dense 24K bright faceted flakes with micro bevels (light & shadow per flake)
+    for (let i = 0; i < fineCount; i++) {
+      const fx = Math.random() * w;
+      const fy = Math.random() * h;
+      const size = Math.random() * 2.6 + 0.8;
+      const color = midGoldTones[Math.floor(Math.random() * midGoldTones.length)];
 
+      // Subtle shadow edge for 3D physical grain
+      ctx.fillStyle = 'rgba(70, 40, 5, 0.45)';
+      ctx.globalAlpha = 0.4;
+      ctx.fillRect(fx + 0.6, fy + 0.6, size, size);
+
+      // Main metallic flake
       ctx.fillStyle = color;
-      ctx.globalAlpha = alpha;
+      ctx.globalAlpha = Math.random() * 0.75 + 0.25;
 
-      if (Math.random() > 0.90) {
-        // 4-point diamond star sparkle
-        const r = size * 1.6;
+      if (Math.random() > 0.45) {
+        // Hexagonal / faceted flake
         ctx.beginPath();
-        ctx.moveTo(px, py - r);
-        ctx.lineTo(px + r * 0.3, py - r * 0.3);
-        ctx.lineTo(px + r, py);
-        ctx.lineTo(px + r * 0.3, py + r * 0.3);
-        ctx.lineTo(px, py + r);
-        ctx.lineTo(px - r * 0.3, py + r * 0.3);
-        ctx.lineTo(px - r, py);
-        ctx.lineTo(px - r * 0.3, py - r * 0.3);
-        ctx.closePath();
-        ctx.fill();
-      } else if (Math.random() > 0.70) {
-        // Diamond crystal
-        ctx.beginPath();
-        ctx.moveTo(px, py - size);
-        ctx.lineTo(px + size, py);
-        ctx.lineTo(px, py + size);
-        ctx.lineTo(px - size, py);
+        const rot = Math.random() * Math.PI;
+        for (let p = 0; p < 6; p++) {
+          const ang = rot + (p * Math.PI) / 3;
+          const px = fx + Math.cos(ang) * size;
+          const py = fy + Math.sin(ang) * size;
+          if (p === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
         ctx.closePath();
         ctx.fill();
       } else {
-        // Micro glitter grain
-        ctx.fillRect(px, py, size, size);
+        ctx.fillRect(fx, fy, size, size);
       }
     }
+
+    // Layer C: High-specular diamond crystals that catch light
+    for (let i = 0; i < specularCount; i++) {
+      const fx = Math.random() * w;
+      const fy = Math.random() * h;
+      const size = Math.random() * 1.8 + 0.6;
+      ctx.fillStyle = highlightTones[Math.floor(Math.random() * highlightTones.length)];
+      ctx.globalAlpha = Math.random() * 0.85 + 0.15;
+      ctx.beginPath();
+      ctx.arc(fx, fy, size * 0.8, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
     ctx.globalAlpha = 1.0;
 
-    // 4. Embossed Inner Gold Bevel along Heart Perimeter for seamless physical fit
-    ctx.lineWidth = 3.5;
-    ctx.strokeStyle = 'rgba(255, 235, 140, 0.75)';
-    ctx.stroke();
+    // 3. Stamped Gold Foil Border Rim (Physical beveled gold card edge)
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = 'rgba(255, 240, 160, 0.85)';
+    ctx.stroke(heartPath);
 
     ctx.lineWidth = 1.5;
-    ctx.strokeStyle = 'rgba(180, 130, 20, 0.6)';
-    ctx.stroke();
+    ctx.strokeStyle = 'rgba(160, 115, 20, 0.7)';
+    ctx.stroke(heartPath);
 
     ctx.restore();
-  }, []);
+    return foilCanvas;
+  };
 
-  // Initialize canvas
-  const initCanvas = useCallback(() => {
-    const canvas = canvasRef.current;
-    const container = heartContainerRef.current;
-    if (!canvas || !container) return;
+  // Spawn twinkling stars strictly within the heart shape
+  const initTwinkles = (w: number, h: number, heartPath: Path2D) => {
+    const testCanvas = document.createElement('canvas');
+    testCanvas.width = w;
+    testCanvas.height = h;
+    const testCtx = testCanvas.getContext('2d');
+    if (!testCtx) return;
 
-    const rect = container.getBoundingClientRect();
-    const w = Math.round(rect.width);
-    const h = Math.round(rect.height);
+    const stars: TwinkleStar[] = [];
+    const targetCount = isDesktop ? 32 : 22;
 
-    if (w <= 0 || h <= 0) return;
+    for (let attempts = 0; attempts < 400 && stars.length < targetCount; attempts++) {
+      const x = Math.random() * w;
+      const y = Math.random() * h;
+      if (testCtx.isPointInPath(heartPath, x, y)) {
+        stars.push({
+          x,
+          y,
+          size: Math.random() * 4.5 + 2.5,
+          alpha: Math.random(),
+          speed: Math.random() * 0.045 + 0.02,
+          phase: Math.random() * Math.PI * 2,
+          maxAlpha: Math.random() * 0.45 + 0.55,
+          rays: Math.random() > 0.3 ? 4 : 6,
+        });
+      }
+    }
 
-    canvas.width = w;
-    canvas.height = h;
+    twinklesRef.current = stars;
+  };
 
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    if (!ctx) return;
+  // Draw an optical flare / starburst glint
+  const drawGlint = (
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    size: number,
+    alpha: number,
+    rays: number
+  ) => {
+    if (alpha <= 0.02) return;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.globalAlpha = alpha;
 
-    ctx.clearRect(0, 0, w, h);
-    renderGlitterTexture(ctx, w, h);
-  }, [renderGlitterTexture]);
+    // Center radiant bloom
+    const radial = ctx.createRadialGradient(0, 0, 0, 0, 0, size * 1.5);
+    radial.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    radial.addColorStop(0.35, 'rgba(255, 240, 180, 0.7)');
+    radial.addColorStop(1, 'rgba(255, 215, 0, 0)');
+    ctx.fillStyle = radial;
+    ctx.beginPath();
+    ctx.arc(0, 0, size * 1.5, 0, Math.PI * 2);
+    ctx.fill();
 
-  useEffect(() => {
-    initCanvas();
-    const timer = setTimeout(initCanvas, 300);
-    return () => clearTimeout(timer);
-  }, [initCanvas, isDesktop]);
+    // Sharp cross diffraction rays
+    ctx.fillStyle = '#ffffff';
+    for (let r = 0; r < rays; r++) {
+      const angle = (r * Math.PI) / (rays / 2);
+      ctx.save();
+      ctx.rotate(angle);
+      ctx.beginPath();
+      ctx.moveTo(-size * 2.8, 0);
+      ctx.lineTo(0, -size * 0.35);
+      ctx.lineTo(size * 2.8, 0);
+      ctx.lineTo(0, size * 0.35);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
 
-  // Outward explosion of tiny glittering crystals animation
+    ctx.restore();
+  };
+
+  // Outward explosion of tiny glittering crystals on completion
   const triggerOutwardGlitterExplosion = useCallback(() => {
     const pCanvas = particleCanvasRef.current;
     const container = heartContainerRef.current;
@@ -204,13 +288,13 @@ export const HeartScratchReveal: React.FC = () => {
     const heartCenterX = rect.left + rect.width / 2;
     const heartCenterY = rect.top + rect.height * 0.48;
 
-    const particleCount = 140;
+    const particleCount = 160;
     const particles: Particle[] = [];
     const colors = ['#fffbe6', '#ffd700', '#d4af37', '#f4e4b5', '#ffeaa7', '#ffffff'];
 
     for (let i = 0; i < particleCount; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 6 + 2.5;
+      const speed = Math.random() * 6.5 + 2.5;
       particles.push({
         x: heartCenterX + (Math.random() - 0.5) * rect.width * 0.4,
         y: heartCenterY + (Math.random() - 0.5) * rect.height * 0.4,
@@ -245,7 +329,6 @@ export const HeartScratchReveal: React.FC = () => {
         ctx.globalAlpha = p.alpha;
         ctx.fillStyle = p.color;
 
-        // Sparkle diamond shape
         ctx.beginPath();
         ctx.moveTo(0, -p.size);
         ctx.lineTo(p.size * 0.8, 0);
@@ -264,9 +347,9 @@ export const HeartScratchReveal: React.FC = () => {
     };
 
     requestAnimationFrame(animateParticles);
-  }, []);
+  }, [isDesktop]);
 
-  // Completion trigger when ~60% scratched
+  // Completion trigger when ~58% scratched
   const handleCompletion = useCallback(() => {
     setIsRevealed(true);
     audioEngine.playCelebrationChime();
@@ -274,8 +357,8 @@ export const HeartScratchReveal: React.FC = () => {
 
     try {
       confetti({
-        particleCount: 50,
-        spread: 60,
+        particleCount: 55,
+        spread: 65,
         origin: { y: 0.52 },
         colors: ['#ffd700', '#d4af37', '#fff8db', '#faf0d2'],
       });
@@ -284,20 +367,20 @@ export const HeartScratchReveal: React.FC = () => {
     }
   }, [triggerOutwardGlitterExplosion]);
 
-  // Pixel scratch ratio calculation
+  // Calculate pixel scratch ratio from the offscreen mask
   const checkScratchRatio = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || isRevealed) return;
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    const mask = maskCanvasRef.current;
+    if (!mask || isRevealed) return;
+    const ctx = mask.getContext('2d');
     if (!ctx) return;
 
     try {
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const imgData = ctx.getImageData(0, 0, mask.width, mask.height);
       const data = imgData.data;
       let erasedCount = 0;
       let totalCount = 0;
 
-      // Sample every 16th pixel for real-time mobile performance
+      // Sample every 16th pixel for mobile performance
       for (let i = 3; i < data.length; i += 16) {
         if (data[i] !== undefined) {
           totalCount++;
@@ -310,7 +393,6 @@ export const HeartScratchReveal: React.FC = () => {
       const ratio = Math.round((erasedCount / totalCount) * 100);
       setScratchPercent(ratio);
 
-      // Trigger completion at ~58% - 60%
       if (ratio >= 58 && !isRevealed) {
         handleCompletion();
       }
@@ -319,45 +401,221 @@ export const HeartScratchReveal: React.FC = () => {
     }
   }, [isRevealed, handleCompletion]);
 
-  // Scratch action using Pointer Events with smooth stroke
-  const scratchAt = (clientX: number, clientY: number) => {
-    const canvas = canvasRef.current;
-    if (!canvas || isRevealed) return;
-    const rect = canvas.getBoundingClientRect();
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+  // Emit sparkling gold dust particles while scratching
+  const emitScratchDust = (x: number, y: number) => {
+    const count = 3;
+    const colors = ['#fffdf0', '#ffd700', '#fae188', '#d4af37'];
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = Math.random() * 2.5 + 0.8;
+      scratchDustRef.current.push({
+        x: x + (Math.random() - 0.5) * 8,
+        y: y + (Math.random() - 0.5) * 8,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 0.8,
+        size: Math.random() * 2.2 + 1.0,
+        alpha: 1.0,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        life: 0,
+        maxLife: Math.floor(Math.random() * 15 + 15),
+      });
+    }
+  };
+
+  // Erase scratch line on the offscreen mask with smooth interpolation
+  const eraseOnMask = (x1: number, y1: number, x2: number, y2: number) => {
+    const mask = maskCanvasRef.current;
+    if (!mask) return;
+    const ctx = mask.getContext('2d');
     if (!ctx) return;
 
-    const x = ((clientX - rect.left) / rect.width) * canvas.width;
-    const y = ((clientY - rect.top) / rect.height) * canvas.height;
+    const brushRadius = isDesktop ? 26 : 22;
 
     ctx.save();
     ctx.globalCompositeOperation = 'destination-out';
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = brushRadius * 2;
+
     ctx.beginPath();
-    // Smooth rounded scratch circle (radius adjusted for comfortable finger & mouse)
-    const brushRadius = isDesktop ? 26 : 22;
-    ctx.arc(x, y, brushRadius, 0, Math.PI * 2);
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(x2, y2, brushRadius, 0, Math.PI * 2);
     ctx.fill();
+
     ctx.restore();
   };
 
-  const isScratchingRef = useRef<boolean>(false);
+  // Initialize both offscreen canvases and start the 60fps shimmer animation loop
+  const initCanvases = useCallback(() => {
+    const canvas = canvasRef.current;
+    const container = heartContainerRef.current;
+    if (!canvas || !container) return;
 
+    const rect = container.getBoundingClientRect();
+    const w = Math.round(rect.width);
+    const h = Math.round(rect.height);
+    if (w <= 0 || h <= 0) return;
+
+    canvas.width = w;
+    canvas.height = h;
+
+    // 1. Offscreen Scratch Mask (starts filled with solid white)
+    const mask = document.createElement('canvas');
+    mask.width = w;
+    mask.height = h;
+    const maskCtx = mask.getContext('2d');
+    if (maskCtx) {
+      const heartPath = createHeartPath(w, h);
+      maskCtx.fillStyle = '#ffffff';
+      maskCtx.fill(heartPath);
+    }
+    maskCanvasRef.current = mask;
+
+    // 2. Offscreen High-Density Golden Glitter Foil Texture
+    foilTextureCanvasRef.current = buildRealisticGlitterFoil(w, h);
+
+    // 3. Setup scintillating twinkles inside the heart
+    const heartPath = createHeartPath(w, h);
+    initTwinkles(w, h, heartPath);
+
+    // Cancel any existing animation frame
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+    }
+
+    // 60fps Shimmer, Caustic Sheen & Twinkle Render Loop
+    const renderLoop = (now: number) => {
+      const ctx = canvas.getContext('2d');
+      const maskCanvas = maskCanvasRef.current;
+      const foilCanvas = foilTextureCanvasRef.current;
+
+      if (!ctx || !maskCanvas || !foilCanvas) return;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Step A: Draw the Base High-Resolution Glitter Foil
+      ctx.drawImage(foilCanvas, 0, 0);
+
+      // Step B: Sweeping Specular Light Caustic Sheen (Continuous luxury gleam across facets)
+      ctx.save();
+      ctx.clip(heartPath);
+
+      const sheenProgress = ((now * 0.00035) % 1.6) - 0.3; // Cycles across heart
+      const sheenX = sheenProgress * w * 2.2 - w * 0.6;
+      const sheenY = sheenProgress * h * 1.5 - h * 0.2;
+      const sheenWidth = w * 0.6;
+
+      const sheenGrad = ctx.createLinearGradient(sheenX, sheenY, sheenX + sheenWidth, sheenY + sheenWidth * 0.8);
+      sheenGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+      sheenGrad.addColorStop(0.35, 'rgba(255, 250, 215, 0.45)');
+      sheenGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0.85)');
+      sheenGrad.addColorStop(0.65, 'rgba(255, 250, 215, 0.45)');
+      sheenGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+      ctx.globalCompositeOperation = 'color-dodge';
+      ctx.fillStyle = sheenGrad;
+      ctx.fillRect(0, 0, w, h);
+      ctx.restore();
+
+      // Step C: Scintillating Optical Glints (Twinkles on individual flakes)
+      twinklesRef.current.forEach((star) => {
+        star.phase += star.speed;
+        const currentAlpha = Math.sin(star.phase) * star.maxAlpha;
+        if (currentAlpha > 0.05) {
+          drawGlint(ctx, star.x, star.y, star.size, currentAlpha, star.rays);
+        }
+      });
+
+      // Step D: Active Scratch Dust Flakes (particles that fly off while scratching)
+      const dust = scratchDustRef.current;
+      for (let i = dust.length - 1; i >= 0; i--) {
+        const d = dust[i];
+        d.x += d.vx;
+        d.y += d.vy;
+        d.vy += 0.05;
+        d.vx *= 0.96;
+        d.life++;
+        d.alpha = 1 - d.life / d.maxLife;
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, d.alpha);
+        ctx.fillStyle = d.color;
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        if (d.life >= d.maxLife) {
+          dust.splice(i, 1);
+        }
+      }
+
+      // Step E: Composite the Scratch Mask to Reveal Underneath
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.drawImage(maskCanvas, 0, 0);
+      ctx.globalCompositeOperation = 'source-over';
+
+      if (!isRevealed) {
+        animFrameRef.current = requestAnimationFrame(renderLoop);
+      }
+    };
+
+    animFrameRef.current = requestAnimationFrame(renderLoop);
+  }, [isRevealed, isDesktop]);
+
+  useEffect(() => {
+    initCanvases();
+    const timer = setTimeout(initCanvases, 250);
+    return () => {
+      clearTimeout(timer);
+      if (animFrameRef.current) {
+        cancelAnimationFrame(animFrameRef.current);
+      }
+    };
+  }, [initCanvases, isDesktop]);
+
+  // Handle pointer scratching gestures
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (isRevealed) return;
     isScratchingRef.current = true;
     setHasStartedScratching(true);
     e.currentTarget.setPointerCapture(e.pointerId);
-    scratchAt(e.clientX, e.clientY);
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
+    const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
+
+    lastPointRef.current = { x, y };
+    eraseOnMask(x, y, x, y);
+    emitScratchDust(x, y);
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!isScratchingRef.current || isRevealed) return;
-    scratchAt(e.clientX, e.clientY);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * canvas.width;
+    const y = ((e.clientY - rect.top) / rect.height) * canvas.height;
+
+    if (lastPointRef.current) {
+      eraseOnMask(lastPointRef.current.x, lastPointRef.current.y, x, y);
+      emitScratchDust(x, y);
+    }
+    lastPointRef.current = { x, y };
     checkScratchRatio();
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
     isScratchingRef.current = false;
+    lastPointRef.current = null;
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch {
@@ -456,7 +714,7 @@ export const HeartScratchReveal: React.FC = () => {
             </div>
           </div>
 
-          {/* TOP INTERACTIVE SCRATCH CANVAS (Metallic Champagne Gold Glitter Foil) */}
+          {/* TOP INTERACTIVE SCRATCH CANVAS (Authentic Physical Gold Glitter Foil with Shimmer & Twinkles) */}
           <canvas
             ref={canvasRef}
             onPointerDown={handlePointerDown}
@@ -529,3 +787,5 @@ export const HeartScratchReveal: React.FC = () => {
     </section>
   );
 };
+
+export default HeartScratchReveal;

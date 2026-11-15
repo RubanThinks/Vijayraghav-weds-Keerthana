@@ -55,63 +55,20 @@ export const WeddingCeremonySection: React.FC = () => {
     <section id="ceremony" className="screen-section relative overflow-hidden bg-wine-950 flex items-center justify-center select-none">
       {/* 100% Full Viewport on Mobile (Zero Gaps), 16:9 on Desktop */}
       <div className="relative w-full h-[100dvh] min-h-[100dvh] md:min-h-0 md:h-[min(100dvh,calc(100vw*9/16))] md:w-[min(100vw,calc(100dvh*16/9))] md:aspect-[16/9] flex items-center justify-center overflow-hidden select-none shadow-2xl">
-        {/* Deep Midnight Plum & Wine Background with Mandapam Architecture */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1F0212] via-[#2D061A] to-[#1F0212] z-0 pointer-events-none" />
-
-        {/* Traditional Tamil Mandapam Pillars & Floral Toranam Garland SVG Layer */}
-        <svg
-          className="absolute inset-0 w-full h-full pointer-events-none z-0 opacity-40"
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio="none"
-          viewBox="0 0 1000 600"
-        >
-          <defs>
-            <linearGradient id="mandapamGold" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#F7DFB3" />
-              <stop offset="50%" stopColor="#E0B477" />
-              <stop offset="100%" stopColor="#B17D3E" />
-            </linearGradient>
-            <pattern id="jasmineStrands" width="40" height="60" patternUnits="userSpaceOnUse">
-              <circle cx="20" cy="10" r="3" fill="#FFFBF0" opacity="0.9" />
-              <circle cx="20" cy="25" r="3.5" fill="#FAF2E2" opacity="0.95" />
-              <circle cx="20" cy="40" r="3" fill="#FFFBF0" opacity="0.9" />
-              <circle cx="20" cy="55" r="3.5" fill="#FAF2E2" opacity="0.95" />
-            </pattern>
-          </defs>
-
-          {/* Top Mandapam Toranam Arch */}
-          <path
-            d="M 50 0 C 250 80, 750 80, 950 0 L 950 40 C 750 120, 250 120, 50 40 Z"
-            fill="url(#mandapamGold)"
-            opacity="0.35"
+        
+        {/* Dedicated Holy Muhurtham Background Artwork (Traditional Tamil Mandapam & Lamps) */}
+        <picture className="absolute inset-0 w-full h-full pointer-events-none select-none z-0">
+          <source media="(max-width: 767px)" srcSet="/assets/backgrounds/wedding-mobile.jpg" />
+          <img
+            src="/assets/backgrounds/wedding-desktop.jpg"
+            alt="Holy Muhurtham Wedding Ceremony Stage Background"
+            className="w-full h-full object-cover object-center"
+            loading="eager"
           />
-
-          {/* Hanging Jasmine Garlands Across the Top */}
-          <rect x="60" y="40" width="880" height="80" fill="url(#jasmineStrands)" opacity="0.6" />
-
-          {/* Left Ceremonial Brass Kuthuvilakku Lamp Silhouette */}
-          <g transform="translate(70, 320)" opacity="0.45">
-            <ellipse cx="25" cy="220" rx="25" ry="8" fill="url(#mandapamGold)" />
-            <rect x="23" y="40" width="4" height="180" fill="url(#mandapamGold)" />
-            <circle cx="25" cy="50" r="16" fill="url(#mandapamGold)" />
-            <circle cx="25" cy="100" r="12" fill="url(#mandapamGold)" />
-            <circle cx="25" cy="150" r="10" fill="url(#mandapamGold)" />
-            <path d="M 12 35 C 12 20, 25 10, 25 10 C 25 10, 38 20, 38 35 Z" fill="#FFE082" opacity="0.9" />
-          </g>
-
-          {/* Right Ceremonial Brass Kuthuvilakku Lamp Silhouette */}
-          <g transform="translate(880, 320)" opacity="0.45">
-            <ellipse cx="25" cy="220" rx="25" ry="8" fill="url(#mandapamGold)" />
-            <rect x="23" y="40" width="4" height="180" fill="url(#mandapamGold)" />
-            <circle cx="25" cy="50" r="16" fill="url(#mandapamGold)" />
-            <circle cx="25" cy="100" r="12" fill="url(#mandapamGold)" />
-            <circle cx="25" cy="150" r="10" fill="url(#mandapamGold)" />
-            <path d="M 12 35 C 12 20, 25 10, 25 10 C 25 10, 38 20, 38 35 Z" fill="#FFE082" opacity="0.9" />
-          </g>
-        </svg>
+        </picture>
 
         {/* Content Container */}
-        <div className="relative z-10 w-full max-w-2xl mx-auto flex flex-col items-center text-center justify-between h-full py-4 sm:py-6 px-4">
+        <div className="relative z-10 w-full max-w-2xl mx-auto flex flex-col items-center text-center justify-between h-full pt-16 pb-6 sm:pt-20 sm:pb-8 md:pt-8 md:pb-6 px-4">
           
           {/* Header */}
           <div className="flex flex-col items-center mt-1 sm:mt-2">

@@ -18,12 +18,12 @@ export const FinalGratitude: React.FC = () => {
       {/* 100% Full Viewport on Mobile (Zero Gaps), 16:9 on Desktop */}
       <div className="relative w-full h-[100dvh] min-h-[100dvh] md:min-h-0 md:h-[min(100dvh,calc(100vw*9/16))] md:w-[min(100vw,calc(100dvh*16/9))] md:aspect-[16/9] flex items-center justify-center overflow-hidden select-none shadow-2xl">
         
-        {/* Deep Midnight Plum & Creamy Roses Artwork Layer */}
+        {/* Dedicated Gratitude Background Artwork (Hanging Vilakku Lamps & Royal Plum Velvet) */}
         <picture className="absolute inset-0 w-full h-full pointer-events-none select-none z-0">
-          <source media="(max-width: 767px)" srcSet="/assets/backgrounds/hero-mobile.jpg" />
+          <source media="(max-width: 767px)" srcSet="/assets/backgrounds/gratitude-mobile.jpg" />
           <img
-            src="/assets/backgrounds/hero-desktop.jpg"
-            alt="Gratitude Botanical Background"
+            src="/assets/backgrounds/gratitude-desktop.jpg"
+            alt="Gratitude Traditional Vilakku & Floral Background"
             className="w-full h-full object-cover object-center"
             loading="lazy"
           />

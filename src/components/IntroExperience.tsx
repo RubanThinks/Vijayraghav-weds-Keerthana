@@ -32,7 +32,7 @@ export const IntroExperience: React.FC<IntroExperienceProps> = ({ onComplete }) 
     setProgress((video.currentTime / video.duration) * 100);
   };
 
-  // Attempt autoplay on mount (muted by default)
+  // Attempt autoplay on mount (muted video + audio track starts playing right away)
   useEffect(() => {
     const video = videoRef.current;
     if (video) {
@@ -40,6 +40,8 @@ export const IntroExperience: React.FC<IntroExperienceProps> = ({ onComplete }) 
         // Autoplay may be restricted until user interacts
       });
     }
+    // Start background audio from initial loading
+    audioEngine.play();
   }, []);
 
   return (

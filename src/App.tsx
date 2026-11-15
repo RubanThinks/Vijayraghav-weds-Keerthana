@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { IntroExperience } from './components/IntroExperience';
 import { DivineHero } from './components/DivineHero';
 import { HeartScratchReveal } from './components/HeartScratchReveal';
@@ -12,12 +12,18 @@ import { FinalGratitude } from './components/FinalGratitude';
 import { Navigation } from './components/Navigation';
 import { AudioController } from './components/AudioController';
 import { useLenisGsap } from './hooks/useLenisGsap';
+import { audioEngine } from './utils/audioEngine';
 
 export function App() {
   const [showIntro, setShowIntro] = useState<boolean>(true);
 
   // Initialize smooth scroll & GSAP transitions
   useLenisGsap();
+
+  // Play background wedding audio from the moment the site begins loading
+  useEffect(() => {
+    audioEngine.play();
+  }, []);
 
   const handleReplayIntro = () => {
     setShowIntro(true);

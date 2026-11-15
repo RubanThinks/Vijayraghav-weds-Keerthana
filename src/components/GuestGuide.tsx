@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plane, Train, Hotel, Sparkles } from 'lucide-react';
+import { Plane, Train, Sparkles } from 'lucide-react';
 import { RawBackground } from './RawBackground';
 
 export const GuestGuide: React.FC = () => {
@@ -15,12 +15,6 @@ export const GuestGuide: React.FC = () => {
       icon: Train,
       badge: "Karur Junction (KRR)",
       desc: "Direct express trains from Chennai, Bengaluru, and Coimbatore. The venue is just 10 minutes from the station.",
-    },
-    {
-      title: "Guest Stays",
-      icon: Hotel,
-      badge: "Karur Town",
-      desc: "Comfortable air-conditioned hotel rooms, suites, and guest accommodations are located within 3 km of the Mahal.",
     },
   ];
 
@@ -41,7 +35,7 @@ export const GuestGuide: React.FC = () => {
           </div>
 
           <h2 className="font-serif italic text-3xl sm:text-4xl md:text-5xl text-ivory-50 tracking-wide text-shadow-deep">
-            Travel &amp; Guest Guide
+            Travel Guide
           </h2>
           <p className="font-sans text-[11px] sm:text-xs text-gold-300/90 tracking-widest uppercase mt-1 text-shadow-deep">
             Directions and travel routes to Karur
@@ -49,13 +43,13 @@ export const GuestGuide: React.FC = () => {
         </div>
 
         {/* Square Travel Cards Grid: Desktop & Mobile View */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 lg:gap-6 w-full max-w-4xl mx-auto items-center justify-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8 w-full max-w-2xl mx-auto items-center justify-center">
           {travelOptions.map((item, idx) => {
             const Icon = item.icon;
             return (
               <div
                 key={idx}
-                className="w-full max-w-[280px] sm:max-w-none mx-auto aspect-square p-6 sm:p-7 rounded-3xl luxury-card-gold shadow-[0_12px_36px_rgba(0,0,0,0.7)] border border-gold-400/50 flex flex-col items-center justify-center text-center group hover:border-gold-300 transition-all duration-300 hover:scale-[1.02]"
+                className="w-full max-w-[280px] sm:max-w-[320px] mx-auto aspect-square p-6 sm:p-7 rounded-3xl luxury-card-gold shadow-[0_12px_36px_rgba(0,0,0,0.7)] border border-gold-400/50 flex flex-col items-center justify-center text-center group hover:border-gold-300 transition-all duration-300 hover:scale-[1.02]"
               >
                 {/* Large Icon Container */}
                 <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-gold-500/25 to-wine-900/80 border border-gold-400/50 flex items-center justify-center text-gold-300 mb-3 shadow-lg group-hover:scale-110 transition-transform">

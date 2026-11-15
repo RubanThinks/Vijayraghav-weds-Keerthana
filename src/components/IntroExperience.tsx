@@ -64,7 +64,7 @@ export const IntroExperience: React.FC<IntroExperienceProps> = ({ onComplete }) 
         isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
-      {/* Cinematic Fullscreen Background Video */}
+      {/* Cinematic Background Video - uncropped, native aspect ratio */}
       <video
         ref={videoRef}
         src="/assets/video/wedding-intro.mp4"
@@ -73,7 +73,7 @@ export const IntroExperience: React.FC<IntroExperienceProps> = ({ onComplete }) 
         muted={isMuted}
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleFinish}
-        className="w-full h-full object-cover object-center select-none"
+        className="w-full h-full object-contain object-center select-none"
       />
 
       {/* Subtle Luxury Vignette Overlay to Blend Edges */}

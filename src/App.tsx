@@ -8,7 +8,6 @@ import { ReceptionSection } from './components/ReceptionSection';
 import { WeddingCeremonySection } from './components/WeddingCeremonySection';
 import { GuestGuide } from './components/GuestGuide';
 import { FindYourWay } from './components/FindYourWay';
-import { RsvpSection } from './components/RsvpSection';
 import { FinalGratitude } from './components/FinalGratitude';
 import { Navigation } from './components/Navigation';
 import { AudioController } from './components/AudioController';
@@ -63,9 +62,6 @@ export function App() {
 
         {/* SECTION 08: Venue and Directions */}
         <FindYourWay />
-
-        {/* Interactive RSVP Section */}
-        <RsvpSection />
 
         {/* SECTION 09: Gratitude & Emotional Closing */}
         <FinalGratitude />

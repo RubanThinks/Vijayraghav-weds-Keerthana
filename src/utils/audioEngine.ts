@@ -1,26 +1,44 @@
 // Audio engine for Vijayraghav & Keerthana Wedding
-// Plays high-quality background audio (vk-audio.mp3) with seamless looping,
-// unmuted autoplay, and instant first-gesture unlock fallback.
+// Plays high-quality background audio (vk-audio.mp3) with DOM attachment,
+// continuous looping, unmuted autoplay, Web Audio unlock, and persistent capture-phase
+// gesture unlocking across all mobile browsers (iOS Safari, Android Chrome).
 
 class WeddingAudioEngine {
   private audio: HTMLAudioElement | null = null;
+  private ctx: AudioContext | null = null;
   private isPlaying: boolean = false;
   private userMuted: boolean = false;
   private listeners: ((playing: boolean) => void)[] = [];
-  private hasInteractionListener: boolean = false;
+  private hasInteractionListeners: boolean = false;
 
   constructor() {
     if (typeof window !== 'undefined') {
-      this.initAudio();
+      // Initialize after DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => this.initAudio());
+      } else {
+        this.initAudio();
+      }
     }
   }
 
   private initAudio() {
     if (this.audio) return;
     try {
-      this.audio = new Audio('/assets/audio/vk-audio.mp3');
-      this.audio.loop = true;
-      this.audio.preload = 'auto';
+      // Attach audio element directly to the DOM for maximum mobile browser compatibility
+      let audio = document.getElementById('vk-wedding-audio') as HTMLAudioElement;
+      if (!audio) {
+        audio = document.createElement('audio');
+        audio.id = 'vk-wedding-audio';
+        audio.src = '/assets/audio/vk-audio.mp3';
+        audio.loop = true;
+        audio.preload = 'auto';
+        audio.setAttribute('playsinline', 'true');
+        audio.setAttribute('webkit-playsinline', 'true');
+        audio.style.display = 'none';
+        document.body.appendChild(audio);
+      }
+      this.audio = audio;
       this.audio.volume = 0.85;
 
       this.audio.addEventListener('play', () => {
@@ -39,19 +57,40 @@ class WeddingAudioEngine {
         }
       });
 
-      // Attempt immediate autoplay right away on load
+      // Attempt immediate unmuted autoplay on load
       this.attemptAutoPlay();
 
-      // Ensure that on the very first touch/click/interaction anywhere on the screen,
-      // the audio begins playing if the initial autoplay was blocked by the browser.
+      // Setup interaction unlock fallback for mobile Chrome/Safari
       this.setupInteractionUnlock();
+
+      // Additional trigger attempts on browser lifecycle events
+      window.addEventListener('pageshow', () => this.attemptAutoPlay(), { passive: true });
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && !this.userMuted && !this.isPlaying) {
+          this.attemptAutoPlay();
+        }
+      });
     } catch (err) {
       console.warn("Audio initialization notice:", err);
     }
   }
 
+  private unlockAudioContext() {
+    try {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!this.ctx) {
+        this.ctx = new AudioCtx();
+      }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume().catch(() => {});
+      }
+    } catch {
+      // Ignore if not supported
+    }
+  }
+
   private attemptAutoPlay() {
-    if (!this.audio || this.userMuted) return;
+    if (!this.audio || this.userMuted || this.isPlaying) return;
     const playPromise = this.audio.play();
     if (playPromise !== undefined) {
       playPromise
@@ -60,7 +99,6 @@ class WeddingAudioEngine {
           this.notify();
         })
         .catch(() => {
-          // Handled gracefully via setupInteractionUnlock
           this.isPlaying = false;
           this.notify();
         });
@@ -68,36 +106,64 @@ class WeddingAudioEngine {
   }
 
   private setupInteractionUnlock() {
-    if (this.hasInteractionListener || typeof window === 'undefined') return;
-    this.hasInteractionListener = true;
+    if (this.hasInteractionListeners || typeof window === 'undefined') return;
+    this.hasInteractionListeners = true;
 
-    const unlock = () => {
-      if (!this.userMuted && this.audio && this.audio.paused) {
-        this.audio.play().catch(() => {});
+    const events = [
+      'touchstart',
+      'touchend',
+      'click',
+      'pointerdown',
+      'pointerup',
+      'scroll'
+    ];
+
+    const unlockHandler = async () => {
+      if (this.isPlaying || this.userMuted) {
+        if (this.isPlaying) {
+          cleanup();
+        }
+        return;
       }
-      window.removeEventListener('pointerdown', unlock);
-      window.removeEventListener('touchstart', unlock);
-      window.removeEventListener('click', unlock);
-      window.removeEventListener('keydown', unlock);
-      this.hasInteractionListener = false;
+
+      this.unlockAudioContext();
+
+      if (this.audio) {
+        try {
+          await this.audio.play();
+          this.isPlaying = true;
+          this.notify();
+          cleanup();
+        } catch {
+          // Keep listeners active until audio is confirmed playing
+        }
+      }
     };
 
-    window.addEventListener('pointerdown', unlock, { once: true, passive: true });
-    window.addEventListener('touchstart', unlock, { once: true, passive: true });
-    window.addEventListener('click', unlock, { once: true, passive: true });
-    window.addEventListener('keydown', unlock, { once: true, passive: true });
+    const cleanup = () => {
+      events.forEach((evt) => {
+        window.removeEventListener(evt, unlockHandler, { capture: true });
+        document.removeEventListener(evt, unlockHandler, { capture: true });
+      });
+      this.hasInteractionListeners = false;
+    };
+
+    events.forEach((evt) => {
+      window.addEventListener(evt, unlockHandler, { capture: true, passive: true });
+      document.addEventListener(evt, unlockHandler, { capture: true, passive: true });
+    });
   }
 
   public subscribe(fn: (playing: boolean) => void) {
     this.listeners.push(fn);
     fn(this.isPlaying);
     return () => {
-      this.listeners = this.listeners.filter(l => l !== fn);
+      this.listeners = this.listeners.filter((l) => l !== fn);
     };
   }
 
   private notify() {
-    this.listeners.forEach(fn => fn(this.isPlaying));
+    this.listeners.forEach((fn) => fn(this.isPlaying));
   }
 
   public getIsPlaying(): boolean {
@@ -106,6 +172,7 @@ class WeddingAudioEngine {
 
   public async play(): Promise<void> {
     this.userMuted = false;
+    this.unlockAudioContext();
     if (!this.audio) {
       this.initAudio();
     }
@@ -115,7 +182,7 @@ class WeddingAudioEngine {
         this.isPlaying = true;
         this.notify();
       } catch (err) {
-        console.warn("Play deferred until user gesture:", err);
+        console.warn("Play queued for first interaction:", err);
       }
     }
   }

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Volume2 } from 'lucide-react';
 import { audioEngine } from '../utils/audioEngine';
 
 interface IntroExperienceProps {
@@ -10,20 +10,35 @@ export const IntroExperience: React.FC<IntroExperienceProps> = ({ onComplete }) 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isFadingOut, setIsFadingOut] = useState<boolean>(false);
   const [progress, setProgress] = useState<number>(0);
+  const [isPlaying, setIsPlaying] = useState<boolean>(audioEngine.getIsPlaying());
+
+  useEffect(() => {
+    const unsub = audioEngine.subscribe((playing) => {
+      setIsPlaying(playing);
+    });
+    return unsub;
+  }, []);
 
   const handleFinish = useCallback(() => {
     setIsFadingOut(true);
-    // Start background website music when transitioning to the main site
+    // Ensure background wedding music continues / starts
     try {
       audioEngine.play();
     } catch {
-      // Ignore autoplay policy restriction if any
+      // Ignore autoplay restriction if any
     }
 
     setTimeout(() => {
       onComplete();
     }, 800);
   }, [onComplete]);
+
+  // Screen interaction directly starts the audio if mobile blocked automatic playback
+  const handleScreenTap = () => {
+    if (!isPlaying) {
+      audioEngine.play();
+    }
+  };
 
   // Update progress bar as video plays
   const handleTimeUpdate = () => {
@@ -46,7 +61,9 @@ export const IntroExperience: React.FC<IntroExperienceProps> = ({ onComplete }) 
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-[#1F0212] overflow-hidden transition-opacity duration-700 ease-in-out ${
+      onClick={handleScreenTap}
+      onTouchEnd={handleScreenTap}
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-[#1F0212] overflow-hidden transition-opacity duration-700 ease-in-out cursor-pointer select-none ${
         isFadingOut ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
@@ -59,7 +76,7 @@ export const IntroExperience: React.FC<IntroExperienceProps> = ({ onComplete }) 
         muted
         onTimeUpdate={handleTimeUpdate}
         onEnded={handleFinish}
-        className="w-full h-full object-contain object-center select-none"
+        className="w-full h-full object-contain object-center select-none pointer-events-none"
       />
 
       {/* Subtle Luxury Vignette Overlay to Blend Edges */}
@@ -77,10 +94,23 @@ export const IntroExperience: React.FC<IntroExperienceProps> = ({ onComplete }) 
         </div>
       </div>
 
+      {/* Tap screen hint if audio is waiting for initial mobile interaction */}
+      {!isPlaying && (
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none animate-pulse">
+          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-wine-950/85 border border-gold-400/40 text-gold-300 text-[11px] font-sans tracking-widest uppercase shadow-xl backdrop-blur-sm">
+            <Volume2 className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+            <span>Tap screen for music</span>
+          </div>
+        </div>
+      )}
+
       {/* Bottom Right: Single Skip Intro Button */}
       <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-8 z-30">
         <button
-          onClick={handleFinish}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleFinish();
+          }}
           className="group flex items-center gap-1.5 px-4 py-2 rounded-full bg-gold-500 hover:bg-gold-400 text-plum-950 font-sans text-xs font-bold tracking-widest uppercase transition-all shadow-[0_4px_20px_rgba(224,180,119,0.35)] hover:scale-105 active:scale-95"
         >
           <span>Skip Intro</span>

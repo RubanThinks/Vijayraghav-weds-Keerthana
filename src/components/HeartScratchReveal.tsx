@@ -716,7 +716,7 @@ export const HeartScratchReveal: React.FC = () => {
           <source media="(max-width: 767px)" srcSet="/assets/backgrounds/scratch-mobile.jpg" />
           <img
             src="/assets/backgrounds/scratch-desktop.jpg"
-            alt="Luxury Wedding Scratch Card Background"
+            alt="Wedding Scratch Card Background"
             className="w-full h-full object-fill md:object-fill object-center"
             loading="eager"
           />
